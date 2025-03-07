@@ -1,11 +1,12 @@
 import React from "react";
-import { Navbar, Nav, Form, FormControl } from "react-bootstrap";
+import { Navbar, Nav, Form, FormControl, Button } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
     <Navbar bg="light" expand="lg" className="shadow-sm px-4">
-      <Navbar.Brand href="#" className="d-flex align-items-center">
+      <Navbar.Brand as={Link} to="/" className="d-flex align-items-center">
         <div
           style={{
             width: "40px",
@@ -20,15 +21,33 @@ const Header = () => {
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ms-auto">
-          <Nav.Link href="#">Home</Nav.Link>
-          <Nav.Link href="#">Upload & Analyze</Nav.Link>
-          <Nav.Link href="#">Reports</Nav.Link>
+          <Nav.Link as={Link} to="/">
+            Home
+          </Nav.Link>
+          <Nav.Link as={Link} to="/upload">
+            Upload & Analyze
+          </Nav.Link>
+          <Nav.Link as={Link} to="/reports">
+            About Us
+          </Nav.Link>
+          <Nav.Link as={Link} to="/login">
+            Login/Signup
+          </Nav.Link>
         </Nav>
         <Form className="d-flex ms-3">
-          <FormControl type="search" placeholder="Search in site" className="me-2" />
-          <button className="btn btn-outline-secondary">
+          <FormControl
+            type="search"
+            placeholder="Search in site"
+            className="me-2"
+            style={{ borderRadius: "20px" }}
+          />
+          <Button
+            variant="outline-secondary"
+            className="d-flex align-items-center"
+            style={{ borderRadius: "20px" }}
+          >
             <FaSearch />
-          </button>
+          </Button>
         </Form>
       </Navbar.Collapse>
     </Navbar>

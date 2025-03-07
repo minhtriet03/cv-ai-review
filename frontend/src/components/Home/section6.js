@@ -1,30 +1,31 @@
 import React from "react";
-import { Container, Form, Button } from "react-bootstrap";
+import { Container, Row, Col, Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
-const WelcomeSection = () => {
+const NewSection = () => {
   return (
-    <section className="d-flex justify-content-center align-items-center min-vh-100 bg-white">
+    <section className="d-flex justify-content-center align-items-center min-vh-100 bg-dark text-white">
       <Container className="text-center">
-        <h1 className="fw-bold">Join With Us</h1>
-        <p className="text-muted">Log in to access your CV review</p>
-        <Form className="d-flex flex-column align-items-center">
-          <Form.Control
-            type="email"
-            placeholder="Your Email"
-            className="w-50 mb-3 text-center"
-          />
-          <div className="d-flex gap-3">
-            <Button variant="outline-dark" className="px-5">
-              Sign Up
+        <Row className="justify-content-center align-items-center">
+          <Col md={6}>
+            <h1 className="fw-bold mb-4">Try Our AI Features</h1>
+            <p className="lead mb-4">
+              Let AI rewrite parts of your CV for you.</p>
+            <Button as={Link} to="/features" variant="light" className="px-5">
+              Try Now
             </Button>
-            <Button variant="dark" className="px-5">
-              Log In
-            </Button>
-          </div>
-        </Form>
+          </Col>
+          <Col md={6}>
+            <img
+              src="path/to/your/new-image.jpg"
+              alt="Features"
+              className="img-fluid"
+            />
+          </Col>
+        </Row>
       </Container>
     </section>
   );
 };
 
-export default WelcomeSection;
+export default NewSection;

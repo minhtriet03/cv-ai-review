@@ -9,4 +9,3 @@ const Register = () => {
   );
 };
 export default Register;
-// Compare this snippet from frontend/src/pages/register.js:
