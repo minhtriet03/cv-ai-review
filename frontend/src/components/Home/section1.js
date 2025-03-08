@@ -8,6 +8,7 @@ const HeroSection = () => {
         <Col md={6} className="text-center text-md-start">
           <h1 className="fw-bold">Instant CV Analysis with AI</h1>
           <Button variant="dark" className="mt-3">Get Started</Button>
+          {/* chỗ này thêm phương thức kiểm tra đăng nhập hay chưa */}
         </Col>
         <Col md={6} className="d-flex justify-content-center">
           <div className="placeholder-box"></div>
