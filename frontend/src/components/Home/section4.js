@@ -1,5 +1,6 @@
 import React from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 const SignupSection = () => {
   return (
@@ -20,9 +21,11 @@ const SignupSection = () => {
                   placeholder="Enter your email address"
                 />
               </Form.Group>
-              <Button variant="dark" className="w-100">
-                Sign Up
-              </Button>
+              <Link to="/register">
+                <Button variant="dark" className="w-100">
+                  Sign Up
+                </Button>
+              </Link>
             </Form>
           </Col>
         </Row>

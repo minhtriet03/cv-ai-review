@@ -13,6 +13,8 @@ import Home from "./pages/home";
 import Login from "./pages/login";
 import Register from "./pages/register";
 import Upload from "./pages/upload";
+import SearchResult from "./pages/search";
+import About from "./pages/about";
 
 function App() {
   return (
@@ -24,6 +26,9 @@ function App() {
           <Route path="/upload" element={<Upload />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/search" element={<SearchResult />} />
+          {/* <Route path="/search/:searchTerm" element={<SearchResult />} /> */}
+          <Route path="/about" element={<About />} />
         </Routes>
         <Footer />
       </div>
