@@ -1,25 +1,31 @@
 import React from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
-const HeroSection = () => {
+const NewSection = () => {
   return (
-    <Container fluid className="hero-section py-5">
-      <Row className="align-items-center">
-        <Col md={6} className="text-center text-md-start">
-          <h1 className="fw-bold">Instant CV Analysis with AI</h1>
-          <Button variant="dark" className="mt-3">Get Started</Button>
-          {/* chỗ này thêm phương thức kiểm tra đăng nhập hay chưa */}
-        </Col>
-        <Col md={6} className="d-flex justify-content-center">
-          <div className="placeholder-box"></div>
-        </Col>
-      </Row>
-    </Container>
+    <section className="d-flex justify-content-center align-items-center min-vh-100 bg-dark text-white">
+      <Container className="text-center">
+        <Row className="justify-content-center align-items-center">
+          <Col md={6}>
+            <h1 className="fw-bold mb-4">Try Our AI Features</h1>
+            <p className="lead mb-4">
+              Let AI rewrite parts of your CV for you.</p>
+            <Button as={Link} to="/features" variant="light" className="px-5">
+              Try Now
+            </Button>
+          </Col>
+          <Col md={6}>
+            <img
+              src="path/to/your/new-image.jpg"
+              alt="Features"
+              className="img-fluid"
+            />
+          </Col>
+        </Row>
+      </Container>
+    </section>
   );
 };
 
-export default HeroSection;
-
-// CSS styles (có thể đặt trong file CSS riêng)
-// .hero-section { background-color: #fff; }
-// .placeholder-box { width: 80%; height: 300px; background-color: #eee; border-radius: 8px; }
+export default NewSection;

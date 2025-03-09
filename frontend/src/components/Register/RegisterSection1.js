@@ -56,12 +56,7 @@ const SignupSection = () => {
                   >
                     <FaFacebook className="me-2" /> Sign Up with Facebook
                   </Button>
-                  <Button
-                    variant="outline-dark"
-                    className="w-100 d-flex align-items-center justify-content-center"
-                  >
-                    <FaTwitter className="me-2" /> Sign Up with Twitter
-                  </Button>
+                  
                 </div>
               </Form>
             </Card>
