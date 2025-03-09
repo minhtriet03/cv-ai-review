@@ -1,6 +1,7 @@
 import React from "react";
 import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
+
 const LoginSection1 = () => {
   return (
     <section className="d-flex justify-content-center align-items-center min-vh-100 bg-white">
@@ -35,6 +36,11 @@ const LoginSection1 = () => {
                 <div className="text-center mt-3">
                   <Link to="#" className="text-muted">
                     Forgot Password?
+                  </Link>
+                </div>
+                <div className="text-center mt-2">
+                  <Link to="/register" className="text-muted">
+                    Create Account
                   </Link>
                 </div>
               </Form>
