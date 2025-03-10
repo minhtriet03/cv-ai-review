@@ -11,6 +11,7 @@ import Footer from "./components/footer";
 
 import Home from "./pages/home";
 import Login from "./pages/login";
+import LoginSuccess from "./pages/loginSuccess";
 import Register from "./pages/register";
 import Upload from "./pages/upload";
 import SearchResult from "./pages/search";
@@ -25,6 +26,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/upload" element={<Upload />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/login-success" element={<LoginSuccess />} />
           <Route path="/register" element={<Register />} />
           <Route path="/search" element={<SearchResult />} />
           {/* <Route path="/search/:searchTerm" element={<SearchResult />} /> */}
