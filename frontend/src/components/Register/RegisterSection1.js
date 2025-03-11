@@ -48,19 +48,13 @@ const SignupSection = () => {
                     variant="outline-dark"
                     className="w-100 mb-2 d-flex align-items-center justify-content-center"
                   >
-                    <FaGoogle className="me-2" /> Sign Up with Google
+                    <FaGoogle className="me-2" /> Google
                   </Button>
                   <Button
                     variant="outline-dark"
                     className="w-100 mb-2 d-flex align-items-center justify-content-center"
                   >
-                    <FaFacebook className="me-2" /> Sign Up with Facebook
-                  </Button>
-                  <Button
-                    variant="outline-dark"
-                    className="w-100 d-flex align-items-center justify-content-center"
-                  >
-                    <FaTwitter className="me-2" /> Sign Up with Twitter
+                    <FaFacebook className="me-2" /> Facebook
                   </Button>
                 </div>
               </Form>

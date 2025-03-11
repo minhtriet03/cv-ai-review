@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { UserProvider } from "./UserContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 //Header and Footer
@@ -11,28 +12,35 @@ import Footer from "./components/footer";
 
 import Home from "./pages/home";
 import Login from "./pages/login";
+import LoginSuccess from "./pages/loginSuccess";
 import Register from "./pages/register";
 import Upload from "./pages/upload";
 import SearchResult from "./pages/search";
 import About from "./pages/about";
+import UserInfo from "./components/Login/LoginSection3";
+import Term from "./pages/term-service";
 
 function App() {
   return (
-    <Router>
-      <div className="container">
-        <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/upload" element={<Upload />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/search" element={<SearchResult />} />
-          {/* <Route path="/search/:searchTerm" element={<SearchResult />} /> */}
-          <Route path="/about" element={<About />} />
-        </Routes>
-        <Footer />
-      </div>
-    </Router>
+    <UserProvider>
+      <Router>
+        <div className="container">
+          <Header />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/upload" element={<Upload />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/login-success" element={<LoginSuccess />} />
+            <Route path="/info" element={<UserInfo />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/search" element={<SearchResult />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/term-privacy" element={<Term />} />
+          </Routes>
+          <Footer />
+        </div>
+      </Router>
+    </UserProvider>
   );
 }
 
