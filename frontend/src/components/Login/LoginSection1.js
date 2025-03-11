@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { UserContext } from "../../UserContext";
 
 const LoginSection1 = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  const { setUser } = useContext(UserContext);
 
   const validateForm = () => {
     const newErrors = {};
@@ -21,15 +24,26 @@ const LoginSection1 = () => {
     return newErrors;
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
     } else {
-      // Handle successful login (e.g., call API)
-      console.log("Logging in with", { email, password });
-      navigate("/login-success");
+      try {
+        const response = await axios.post("http://localhost:5000/api/login", {
+          email,
+          password,
+        });
+        console.log("Logging in with", response.data);
+        // Save user data to local storage or context
+        localStorage.setItem("user", JSON.stringify(response.data));
+        setUser(response.data);
+        navigate("/login-success");
+      } catch (error) {
+        console.error("Login failed:", error);
+        setErrors({ api: "Login failed. Please try again." });
+      }
     }
   };
 
@@ -70,6 +84,9 @@ const LoginSection1 = () => {
                     {errors.password}
                   </Form.Control.Feedback>
                 </Form.Group>
+                {errors.api && (
+                  <div className="text-danger mb-3">{errors.api}</div>
+                )}
                 <Button variant="dark" type="submit" className="w-100">
                   Log In
                 </Button>

@@ -1,9 +1,19 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { Navbar, Nav, Form, FormControl, Button } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { UserContext } from "../UserContext";
 
 const Header = () => {
+  const { user, setUser } = useContext(UserContext);
+
+  useEffect(() => {
+    const loggedInUser = JSON.parse(localStorage.getItem("user"));
+    if (loggedInUser) {
+      setUser(loggedInUser);
+    }
+  }, [setUser]);
+
   return (
     <Navbar bg="light" expand="lg" className="shadow-sm px-4">
       <Navbar.Brand as={Link} to="/" className="d-flex align-items-center">
@@ -30,9 +40,15 @@ const Header = () => {
           <Nav.Link as={Link} to="/about">
             About Us
           </Nav.Link>
-          <Nav.Link as={Link} to="/login">
-            Login/Signup
-          </Nav.Link>
+          {user ? (
+            <Nav.Link as={Link} to="/info">
+              Info
+            </Nav.Link>
+          ) : (
+            <Nav.Link as={Link} to="/login">
+              Login/Signup
+            </Nav.Link>
+          )}
         </Nav>
         <Form className="d-flex ms-3">
           <FormControl
