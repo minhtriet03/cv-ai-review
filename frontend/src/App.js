@@ -18,6 +18,7 @@ import Upload from "./pages/upload";
 import SearchResult from "./pages/search";
 import About from "./pages/about";
 import UserInfo from "./components/Login/LoginSection3";
+import Term from "./pages/term-service";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/search" element={<SearchResult />} />
             <Route path="/about" element={<About />} />
+            <Route path="/term-privacy" element={<Term />} />
           </Routes>
           <Footer />
         </div>

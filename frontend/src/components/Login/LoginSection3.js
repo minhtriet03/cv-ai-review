@@ -1,14 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../UserContext";
+import { format } from "date-fns"; //fomat ngày giờ
 
-const UserInfo = ({ user }) => {
+const UserInfo = () => {
   const [profileImage, setProfileImage] = useState(null);
+  const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const loggedInUser = JSON.parse(localStorage.getItem("user"));
+    console.log("Logged in user from localStorage:", loggedInUser); // Debug log
+    if (loggedInUser) {
+      setUser(loggedInUser);
+      console.log("User state set:", loggedInUser); // Debug log
+    }
+  }, [setUser]);
+
   const handleLogout = () => {
-    // Xóa thông tin người dùng (giả lập)
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    setUser(null);
     navigate("/");
   };
 
@@ -30,11 +43,13 @@ const UserInfo = ({ user }) => {
           <Col md={6}>
             <Card className="shadow-lg p-4 text-center">
               <h3 className="fw-bold">User Information</h3>
-              <p className="text-muted">Welcome back, {user?.name}!</p>
+              <p className="text-muted">
+                Welcome back, <strong>{user?.name} !</strong>
+              </p>
               <Card.Body>
-                {profileImage ? (
+                {user?.profilePicture ? (
                   <img
-                    src={profileImage}
+                    src={user.profilePicture}
                     alt="Profile"
                     className="img-fluid rounded-circle mb-3"
                     style={{
@@ -62,14 +77,16 @@ const UserInfo = ({ user }) => {
                   <strong>Email:</strong> {user?.email}
                 </p>
                 <p>
-                  <strong>Joined Date:</strong> {user?.joinedDate}
+                  <strong>Joined Date:</strong>{" "}
+                  {user?.updatedAt &&
+                    format(new Date(user.updatedAt), "dd/MM/yyyy")}
                 </p>
                 <Button
                   variant="danger"
                   onClick={handleLogout}
                   className="w-100"
                 >
-                  Logout
+                  Log Out
                 </Button>
               </Card.Body>
             </Card>

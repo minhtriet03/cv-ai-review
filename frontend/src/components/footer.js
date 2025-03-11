@@ -9,11 +9,8 @@ const Footer = () => {
           © 2025 AI CV Review Tool. All rights reserved.
         </small>
         <Nav>
-          <Nav.Link href="#" className="text-muted">
-            Privacy Policy
-          </Nav.Link>
-          <Nav.Link href="#" className="text-muted ms-3">
-            Terms of Service
+          <Nav.Link href="/term-privacy" className="text-muted">
+            Terms & Privacy Policy
           </Nav.Link>
           <Nav.Link href="#" className="text-muted ms-3">
             Created by MinhTriet & PhuGia

@@ -35,17 +35,25 @@ const LoginSection1 = () => {
           email,
           password,
         });
-        console.log("Logging in with", response.data);
-        // Save user data to local storage or context
-        localStorage.setItem("user", JSON.stringify(response.data));
-        setUser(response.data);
-        navigate("/login-success");
+
+        console.log("Login response:", response.data); // Debug
+
+        if (response.data && response.data.user && response.data.token) {
+          localStorage.setItem("user", JSON.stringify(response.data.user));
+          localStorage.setItem("token", response.data.token);
+          setUser(response.data.user);
+          navigate("/login-success");
+        } else {
+          console.error("Login failed: No user data received");
+          setErrors({ api: "Invalid response from server" });
+        }
       } catch (error) {
         console.error("Login failed:", error);
         setErrors({ api: "Login failed. Please try again." });
       }
     }
   };
+
 
   return (
     <section className="d-flex justify-content-center align-items-center min-vh-100 bg-white">
