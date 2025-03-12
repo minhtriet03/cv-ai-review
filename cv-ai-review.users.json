@@ -1,0 +1,70 @@
+[{
+  "_id": {
+    "$oid": "67cf047f9deac9e357edfb3e"
+  },
+  "name": "Diệp Phú Gia",
+  "email": "phugia@example.com",
+  "password": "hashed_password_1",
+  "role": "admin",
+  "profilePicture": "https://images.pexels.com/photos/30963124/pexels-photo-30963124/free-photo-of-ng-i-ph-n-l-n-tu-i-trong-qua-trinh-xay-d-ng-do-th.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+  "reviews": [],
+  "createdAt": "2025-03-10T00:00:00Z",
+  "updatedAt": "2025-03-10T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "67cf047f9deac9e357edfb3f"
+  },
+  "name": "Tô Minh Triết",
+  "email": "trietvui@example.com",
+  "password": "hashed_password_2",
+  "role": "reviewer",
+  "profilePicture": "https://example.com/profiles/bob.jpg",
+  "reviews": [],
+  "createdAt": "2025-03-10T00:00:00Z",
+  "updatedAt": "2025-03-10T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "67cf047f9deac9e357edfb40"
+  },
+  "name": "Charlie Davis",
+  "email": "charlie@example.com",
+  "password": "hashed_password_3",
+  "role": "user",
+  "profilePicture": "https://example.com/profiles/charlie.jpg",
+  "reviews": [],
+  "createdAt": "2025-03-10T00:00:00Z",
+  "updatedAt": "2025-03-10T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "67cf047f9deac9e357edfb41"
+  },
+  "name": "Diana Evans",
+  "email": "diana@example.com",
+  "password": "hashed_password_4",
+  "role": "user",
+  "profilePicture": "https://example.com/profiles/diana.jpg",
+  "reviews": [],
+  "createdAt": "2025-03-10T00:00:00Z",
+  "updatedAt": "2025-03-10T00:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "67cfff95978d37bbc9a128d9"
+  },
+  "name": "Triet Vui",
+  "email": "trietvui2@example.com",
+  "password": "$2b$10$QXZlUL/zxBK6qj8XDjHKfuEkhbNfyNewZRMFMR2NMxGlvhMZ3eT8u",
+  "role": "user",
+  "profilePicture": "https://example.com/profiles/trietvui.jpg",
+  "reviews": [],
+  "createdAt": {
+    "$date": "2025-03-11T09:17:09.661Z"
+  },
+  "updatedAt": {
+    "$date": "2025-03-11T09:17:09.661Z"
+  },
+  "__v": 0
+}]

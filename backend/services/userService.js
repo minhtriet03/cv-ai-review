@@ -32,14 +32,15 @@ exports.loginUser = async (email, password) => {
  const user = await User.findOne({ email: email.trim().toLowerCase() });
   if (!user) {
     console.log("User not found");
-    console.log(`Email entered: |${email}|`);
-    console.log(`Emails in database: ${await User.distinct("email")}`);
+    // console.log(`Email entered: |${email}|`);
+    // console.log(`Emails in database: ${await User.distinct("email")}`);
     throw new Error("Invalid email or password");
   }
 
   // Check if password is correct
   if (password !== user.password) {
     console.log("Password does not match");
+    
     throw new Error("Invalid email or password");
   }
 
