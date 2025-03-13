@@ -28,19 +28,21 @@ exports.registerUser = async (userData) => {
 exports.loginUser = async (email, password) => {
   console.log(`Login attempt with email: ${email} and password: ${password}`);
 
+  // List all users for debugging
+  await exports.listUsers();
+
   // Check if user exists
- const user = await User.findOne({ email: email.trim().toLowerCase() });
+  const user = await User.findOne({ email: email.trim().toLowerCase() });
   if (!user) {
     console.log("User not found");
-    // console.log(`Email entered: |${email}|`);
-    // console.log(`Emails in database: ${await User.distinct("email")}`);
+    console.log(`Email entered: |${email}|`);
+    console.log(`Emails in database: ${await User.distinct("email")}`);
     throw new Error("Invalid email or password");
   }
 
   // Check if password is correct
   if (password !== user.password) {
     console.log("Password does not match");
-    
     throw new Error("Invalid email or password");
   }
 
@@ -55,4 +57,10 @@ exports.loginUser = async (email, password) => {
 
   console.log("Login successful");
   return { user, token };
+};
+
+
+exports.listUsers = async () => {
+  const users = await User.find();
+  console.log("All users in the database:", users);
 };
