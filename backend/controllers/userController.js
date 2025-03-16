@@ -1,5 +1,5 @@
 const User = require("../models/userModel");
-const { registerUser, loginUser } = require("../services/userService");
+const { registerUser, verifyUserEmail, loginUser } = require("../services/userService");
 
 exports.getUsers = async (req, res) => {
   try {
@@ -25,10 +25,24 @@ exports.getUsersById = async (req, res) => {
 
 exports.register = async (req, res) => {
   try {
-    const user = await registerUser(req.body);
-    res.status(201).json(user);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
+    console.log("Received user data:", req.body);
+    const response = await registerUser(req.body);
+    console.log("RegisterUser response:", response);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+exports.verifyEmail = async (req, res) => {
+  console.log("📥 Dữ liệu nhận được từ frontend:", req.body);
+  try {
+    const { email, otp } = req.body;
+    const response = await verifyUserEmail(email, otp);
+    console.log(email,otp);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -37,7 +51,9 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
     const { user, token } = await loginUser(email, password);
     res.status(200).json({ user, token });
-  } catch (err) {
-    res.status(400).json({ message: err.message });
+  } catch (error) {
+    const statusCode = error.status || 500; // Lấy mã lỗi từ createError, mặc định 500
+    res.status(statusCode).json({ message: error.message });
   }
 };
+

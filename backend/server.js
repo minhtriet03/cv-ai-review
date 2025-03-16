@@ -25,7 +25,8 @@ mongoose
 // Routes
 const userRoutes = require("./routers/userRoutes");
 app.use("/api", userRoutes);
-
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 // Simple API to check server
 app.get("/", (req, res) => {
   res.send("🎉 Backend is running!");
