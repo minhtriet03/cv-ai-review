@@ -119,7 +119,7 @@ const LoginSection1 = () => {
                   Log In
                 </Button>
                 <div className="text-center mt-3">
-                  <Link to="#" className="text-muted">
+                  <Link to="/forgot-password" className="text-muted">
                     Forgot Password?
                   </Link>
                 </div>
