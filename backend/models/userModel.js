@@ -10,6 +10,8 @@ const userSchema = new mongoose.Schema(
     reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
     verificationCode: { type: String }, // Mã xác thực email
     isVerified: { type: Boolean, default: false }, // Trạng thái xác thực
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date },
   },
   { timestamps: true }
 );
