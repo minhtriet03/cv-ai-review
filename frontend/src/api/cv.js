@@ -1,35 +1,12 @@
-import api from "./index";
-
-export const uploadCV = async (file) => {
+export const uploadFile = async (file) => {
   const formData = new FormData();
-  formData.append("cv", file);
-  try {
-    const response = await api.post("/upload", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error uploading CV:", error);
-    throw error;
-  }
-};
+  formData.append("file", file);
 
-export const fetchCVs = async () => {
-  try {
-    const response = await api.get("/cvs");
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching CVs:", error);
-    throw error;
-  }
-};
+  const response = await fetch("http://localhost:3000/api/upload", {
+    method: "POST",
+    body: formData,
+  });
 
-export const getCVDetails = async (id) => {
-  try {
-    const response = await api.get(`/cv/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching CV details:", error);
-    throw error;
-  }
+  const data = await response.json();
+  return data.url; // Trả về URL file đã upload
 };

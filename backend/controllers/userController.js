@@ -12,10 +12,10 @@ exports.getUsers = async (req, res) => {
   }
 };
 
-exports.getUsersById = async (req, res) => {
-  const { id } = req.params;
+exports.getUserByEmail = async (req, res) => {
+  const { email } = req.params;
   try {
-    const user = await User.findById(id); // Find user by id
+    const user = await User.findOne({ email: email.trim().toLowerCase() }); // Find user by email
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -103,5 +103,44 @@ exports.resetPassword = async (req, res) => {
     res.status(200).json({ message: "Mật khẩu đã được đặt lại" });
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+};
+
+// upload image
+
+
+exports.updateProfilePicture = async (req, res) => {
+  try {
+    const { userId, imageUrl } = req.body;
+    console.log("📥 Data received:", req.body);
+    // Kiểm tra dữ liệu đầu vào
+    if (!userId || !imageUrl) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    // Cập nhật ảnh đại diện trong database
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { profilePicture: imageUrl },
+      { new: true } // Trả về user đã được cập nhật
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Profile picture updated!",
+        user: updatedUser,
+      });
+    console.log("✅ Updated user:", updatedUser);
+  } catch (error) {
+    console.error("❌ Error updating profile picture:", error);
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 };
