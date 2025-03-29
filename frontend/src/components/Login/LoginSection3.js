@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { UserContext } from "../../UserContext";
 import {
   Card,
@@ -11,8 +11,10 @@ import {
   Space,
   Upload,
   message,
+  
 } from "antd";
-import { UserOutlined, UploadOutlined } from "@ant-design/icons";
+import { format } from "date-fns";
+import { UserOutlined, UploadOutlined, EditOutlined } from "@ant-design/icons";
 
 const { Title, Text } = Typography;
 
@@ -90,16 +92,31 @@ const handleUploadAvatar = async (file) => {
     console.error("Lỗi upload avatar:", error);
     message.error("Lỗi khi upload ảnh.");
   }
-};
+  };
+  
+const handleLogout = () => {
+     localStorage.removeItem("user");
+     localStorage.removeItem("token");
+     setUser(null);
+     navigate("/");
+   };
   return (
-    <Row justify="center" align="middle" style={{ minHeight: "100vh", backgroundColor: "#f0f2f5" }}>
+    <Row
+      justify="center"
+      align="middle"
+      style={{ minHeight: "100vh", backgroundColor: "#f0f2f5" }}
+    >
       <Col xs={24} sm={18} md={12} lg={8}>
         <Card bordered={false} style={{ textAlign: "center", padding: "20px" }}>
           <Title level={3}>User Information</Title>
           <Text type="secondary">
-            Welcome back, <strong>{user?.name}</strong>
+            Welcome back, <strong>{user?.name} </strong>
           </Text>
-          <Space direction="vertical" size="middle" style={{ width: "100%", marginTop: 20 }}>
+          <Space
+            direction="vertical"
+            size="middle"
+            style={{ width: "100%", marginTop: 20 }}
+          >
             {user?.profilePicture ? (
               <Avatar src={user.profilePicture} size={120} />
             ) : (
@@ -115,6 +132,30 @@ const handleUploadAvatar = async (file) => {
             >
               <Button icon={<UploadOutlined />}>Upload Profile Picture</Button>
             </Upload>
+            <Text strong>
+              <strong>
+                {user?.name}
+
+                <EditOutlined />
+              </strong>
+            </Text>
+            <Text>
+              <strong>Email:</strong> {user?.email}
+            </Text>
+            <Text>
+              <strong>Joined Date:</strong>{" "}
+              {user?.updatedAt &&
+                format(new Date(user.updatedAt), "dd/MM/yyyy")}
+            </Text>
+
+            <Space style={{ marginTop: 20 }}>
+              <Button color="purple" variant="outlined" href="/change-password">
+                Change Password
+              </Button>
+              <Button danger onClick={handleLogout}>
+                Log Out
+              </Button>
+            </Space>
           </Space>
         </Card>
       </Col>
