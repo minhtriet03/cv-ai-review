@@ -1,6 +1,7 @@
-require("dotenv").config();
+// require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
+require("dotenv").config({ path: [".env.local", ".env"] });
 const cors = require("cors");
 
 const app = express();
@@ -24,12 +25,23 @@ mongoose
   .catch((err) => console.error("❌ MongoDB Connection Error:", err));
 
 // Routes
-
+console.log("🔍 OpenAI API URL:", process.env.OPENAI_API_URL);
+console.log(
+  "🔍 OpenAI API Key:",
+  process.env.OPENAI_API_KEY ? "✅ Loaded" : "❌ Not found"
+);
 const userRoutes = require("./routers/userRoutes");
 app.use("/api", userRoutes);
-app.use("/api/user", userRoutes);
-const uploadRoutes = require("./routers/uploadRoutes"); // Kiểm tra đường dẫn đúng chưa
-app.use("/api/upload", uploadRoutes); // Đảm bảo sử dụng đúng route
+// app.use("/api/user", userRoutes);
+
+const uploadRoutes = require("./routers/uploadRoutes"); 
+app.use("/api/upload", uploadRoutes); 
+
+// Router AI OpenAI
+const chatRoutes = require("./routers/openAI-Routes");
+app.use("/api/deepseek", chatRoutes);
+
+
 
 // Simple API to check server
 app.get("/", (req, res) => {
@@ -39,3 +51,4 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on port ${PORT}`);
 });
+

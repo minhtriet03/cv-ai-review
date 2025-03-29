@@ -5,6 +5,19 @@ import { UploadOutlined } from "@ant-design/icons";
 const { Title, Text } = Typography;
 
 const AnalyzeSection = () => {
+
+
+
+
+
+
+
+
+
+
+
+
+  
   return (
     <section style={{ padding: "40px", backgroundColor: "#f4f4f4" }}>
       <Row gutter={[24, 24]} justify="center">

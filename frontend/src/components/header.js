@@ -15,13 +15,13 @@ const Header = () => {
   }, [setUser]);
 
   return (
-    <Navbar bg="light" expand="lg" className="shadow-sm px-4">
+    <Navbar bg="#f2f4f7" expand="lg" className="shadow-sm px-4">
       <Navbar.Brand as={Link} to="/" className="d-flex align-items-center">
         <div
           style={{
             width: "40px",
             height: "40px",
-            backgroundColor: "#ccc",
+            backgroundColor: "#f2f4f7",
             borderRadius: "50%",
             marginRight: "10px",
           }}
@@ -31,14 +31,14 @@ const Header = () => {
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ms-auto">
-          <Nav.Link as={Link} to="/">
+          <Nav.Link as={Link} to="/" className="fw-bold">
             Home
           </Nav.Link>
-          <Nav.Link as={Link} to="/upload">
-            Upload & Analyze
+          <Nav.Link as={Link} to="/upload" className="fw-bold">
+            Review CV
           </Nav.Link>
-          <Nav.Link as={Link} to="/about">
-            About Us
+          <Nav.Link as={Link} to="/ai-counselor" className="fw-bold">
+            AI Counselor
           </Nav.Link>
         </Nav>
         <Form
@@ -50,7 +50,7 @@ const Header = () => {
             placeholder="Search..."
             className="rounded-pill px-4 shadow-sm"
             style={{
-              border: "1px solid #ccc",
+              border: "1px solid #f2f4f7",
               height: "40px",
             }}
           />
