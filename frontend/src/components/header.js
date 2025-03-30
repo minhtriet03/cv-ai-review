@@ -86,7 +86,7 @@ const Header = () => {
                   localStorage.removeItem("user");
                   localStorage.removeItem("token");
                   setUser(null);
-                  navigate("/");
+                  navigate("/logout");
                 }}
                 style={{ color: "black" }}
                 onMouseEnter={(e) => (e.target.style.color = "red")}

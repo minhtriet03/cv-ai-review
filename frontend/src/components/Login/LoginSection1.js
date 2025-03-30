@@ -43,6 +43,7 @@ const LoginSection1 = () => {
   
       if (response.data?.user && response.data?.token) {
         localStorage.setItem("user", JSON.stringify(response.data.user));
+         localStorage.setItem("userId", response.data.user._id);
         localStorage.setItem("token", response.data.token);
         setUser(response.data.user);
         navigate("/login-success");
