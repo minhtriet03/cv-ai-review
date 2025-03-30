@@ -21,6 +21,8 @@ import UserInfo from "./components/Login/LoginSection3";
 import Term from "./pages/term-service";
 import ForgotPasswordPage from "./pages/forgot-password";
 import ResetPassword from "./pages/reset-password";
+import Analyze from "./pages/analyze";
+import ChatboxAI from "./pages/chatboxAI";
 
 function App() {
   return (
@@ -31,6 +33,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/upload" element={<Upload />} />
+            <Route path="/analyze" element={<Analyze />} />
+            <Route path="/ai-counselor" element={<ChatboxAI />} />
             <Route path="/login" element={<Login />} />
             <Route path="/login-success" element={<LoginSuccess />} />
             <Route path="/info" element={<UserInfo />} />

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { Navbar, Nav, Form, FormControl, Button } from "react-bootstrap";
+import { Navbar, Nav, Form, FormControl, Button, Dropdown } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { UserContext } from "../UserContext";
@@ -15,13 +15,13 @@ const Header = () => {
   }, [setUser]);
 
   return (
-    <Navbar bg="light" expand="lg" className="shadow-sm px-4">
+    <Navbar bg="#f2f4f7" expand="lg" className="shadow-sm px-4">
       <Navbar.Brand as={Link} to="/" className="d-flex align-items-center">
         <div
           style={{
             width: "40px",
             height: "40px",
-            backgroundColor: "#ccc",
+            backgroundColor: "#f2f4f7",
             borderRadius: "50%",
             marginRight: "10px",
           }}
@@ -31,40 +31,76 @@ const Header = () => {
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ms-auto">
-          <Nav.Link as={Link} to="/">
+          <Nav.Link as={Link} to="/" className="fw-bold">
             Home
           </Nav.Link>
-          <Nav.Link as={Link} to="/upload">
-            Upload & Analyze
+          <Nav.Link as={Link} to="/upload" className="fw-bold">
+            Review CV
           </Nav.Link>
-          <Nav.Link as={Link} to="/about">
-            About Us
+          <Nav.Link as={Link} to="/ai-counselor" className="fw-bold">
+            AI Counselor
           </Nav.Link>
-          {user ? (
-            <Nav.Link as={Link} to="/info">
-              Info
-            </Nav.Link>
-          ) : (
-            <Nav.Link as={Link} to="/login">
-              Login/Signup
-            </Nav.Link>
-          )}
         </Nav>
-        <Form className="d-flex ms-3">
+        <Form
+          className="d-flex ms-3 me-3 position-relative"
+          style={{ maxWidth: "300px" }}
+        >
           <FormControl
             type="search"
-            placeholder="Search in site"
-            className="me-2"
-            style={{ borderRadius: "20px" }}
+            placeholder="Search..."
+            className="rounded-pill px-4 shadow-sm"
+            style={{
+              border: "1px solid #f2f4f7",
+              height: "40px",
+            }}
           />
           <Button
-            variant="outline-secondary"
-            className="d-flex align-items-center"
-            style={{ borderRadius: "20px" }}
+            variant="light"
+            className="position-absolute end-0 top-50 translate-middle-y me-2 p-1 border-0"
+            style={{ background: "transparent" }}
           >
-            <FaSearch />
+            <FaSearch size={14} />
           </Button>
         </Form>
+
+        {user ? (
+          <Dropdown>
+            <Dropdown.Toggle
+              variant="light"
+              id="dropdown-basic"
+              className="border-0 bg-transparent p-0"
+            >
+              <img
+                src={user.profilePicture || "https://via.placeholder.com/40"}
+                alt="User Avatar"
+                className="rounded-circle"
+                style={{ width: "40px", height: "40px", objectFit: "cover" }}
+              />
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item as={Link} to="/info">
+                Profile
+              </Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => {
+                  localStorage.removeItem("user");
+                  localStorage.removeItem("token");
+                  setUser(null);
+                  navigate("/");
+                }}
+                style={{ color: "black" }}
+                onMouseEnter={(e) => (e.target.style.color = "red")}
+                onMouseLeave={(e) => (e.target.style.color = "black")}
+              >
+                Logout
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        ) : (
+          <Nav.Link as={Link} to="/login">
+            Login/Signup
+          </Nav.Link>
+        )}
       </Navbar.Collapse>
     </Navbar>
   );
