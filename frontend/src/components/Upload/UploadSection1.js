@@ -20,42 +20,51 @@ const UploadSection = () => {
     if (file.size > 5 * 1024 * 1024) {
       message.error("File quá lớn! Vui lòng chọn file nhỏ hơn 5MB.");
       return Upload.LIST_IGNORE;
-    }
 
+    }
     const fileURL = URL.createObjectURL(file);
     setFile(file);
     setFileURL(fileURL);
     return false; // Ngăn chặn upload tự động
+    
   };
 
-  const handleUploadCV = async () => {
-    if (!file) {
-      message.error("Vui lòng chọn file trước khi upload!");
-      return;
-    }
+ const handleUploadCV = async () => {
+   if (!file) {
+     message.error("Vui lòng chọn file trước khi upload!");
+     return;
+   }
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "cv-ai-review");
+   console.log("File chuẩn bị upload:", file);
+   console.log(
+     "Cloudinary Cloud Name:",
+     process.env.REACT_APP_CLOUDINARY_CLOUD_NAME
+   );
 
-    try {
-      const response = await fetch(
-        `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/raw/upload`,
-        { method: "POST", body: formData }
-      );
+   const formData = new FormData();
+   formData.append("file", file);
+   formData.append("upload_preset", "cv-ai-review");
 
-      const result = await response.json();
-      if (!response.ok || !result.secure_url) {
-        throw new Error("Upload thất bại!");
-      }
+   try {
+     const response = await fetch(
+       `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/upload`,
+       { method: "POST", body: formData }
+     );
 
-      message.success("CV tải lên thành công!");
-      navigate("/analyze", { state: { cvUrl: result.secure_url } });
-    } catch (error) {
-      console.error("Lỗi upload:", error);
-      message.error("Đã xảy ra lỗi khi upload CV.");
-    }
-  };
+     const result = await response.json();
+     console.log("Cloudinary API Response:", result); 
+
+     if (!response.ok || !result.secure_url) {
+       throw new Error(result.error?.message || "Upload thất bại!");
+     }
+
+     message.success("CV tải lên thành công!");
+     navigate("/analyze", { state: { cvUrl: result.secure_url } });
+   } catch (error) {
+     console.error("Lỗi upload:", error);
+     message.error(`Đã xảy ra lỗi khi upload CV: ${error.message}`);
+   }
+ };
 
   return (
     <section style={{ padding: "40px", background: "#f5f5f5" }}>
