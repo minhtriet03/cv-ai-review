@@ -80,9 +80,14 @@ const handleUploadCV = async () => {
     if (!saveResponse.ok) {
       throw new Error(saveResult.message || "Lưu CV thất bại!");
     }
-
+    
     message.success("CV tải lên & lưu thành công!");
-    navigate("/analyze", { state: { cvUrl: result.secure_url } });
+    navigate("/analyze", {
+      state: {
+        cvUrl: result.secure_url,
+        cvId: saveResult.cv._id,
+      },
+    });
   } catch (error) {
     console.error("Lỗi upload:", error);
     message.error(`Đã xảy ra lỗi khi upload CV: ${error.message}`);

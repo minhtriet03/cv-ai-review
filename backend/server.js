@@ -41,7 +41,9 @@ app.use("/api/upload", uploadRoutes);
 const chatRoutes = require("./routers/openAI-Routes");
 app.use("/api/deepseek", chatRoutes);
 
-
+// Router AI Review CV
+const cvRoutes = require("./routers/cvRoutes");
+app.use("/api/cv", cvRoutes);
 
 // Simple API to check server
 app.get("/", (req, res) => {

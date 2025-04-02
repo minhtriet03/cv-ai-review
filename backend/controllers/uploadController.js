@@ -19,7 +19,11 @@ exports.uploadFile = async (req, res) => {
     }
 
     const savedCV = await saveCV({ userId, cvUrl, fileName });
-    res.status(201).json({ message: "CV uploaded successfully", cv: savedCV });
+    res.status(201).json({
+      message: "CV uploaded successfully",
+      cv: savedCV,
+      cvId: savedCV._id,
+    });
   } catch (error) {
     console.error("❌ Error uploading CV:", error);
     res

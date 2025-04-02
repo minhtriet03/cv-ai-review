@@ -1,17 +1,74 @@
-import React from "react";
-import { Card, Row, Col, Typography, Button } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+// frontend/src/pages/analyze.js
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Card, Row, Col, Typography, Button, Spin, message } from "antd";
 import { Document, Page, pdfjs } from "react-pdf";
-import { useLocation } from "react-router-dom";
 
-const { Title, Text } = Typography;
+const { Title, Text, Paragraph } = Typography;
 
 // Cấu hình Worker cho react-pdf
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
-const AnalyzeSection = () => {
+const AnalyzePage = () => {
   const location = useLocation();
-  const cvUrl = location.state?.cvUrl; // Lấy URL của CV từ state khi upload
+  const navigate = useNavigate();
+  const cvUrl = location.state?.cvUrl;
+  const cvId = location.state?.cvId;
+
+  const [loading, setLoading] = useState(false);
+  const [review, setReview] = useState(null);
+  const [numPages, setNumPages] = useState(null);
+
+  useEffect(() => {
+    if (!cvUrl || !cvId) {
+      message.error("Thông tin CV không hợp lệ");
+      navigate("/upload");
+      return;
+    }
+
+    analyzeCV();
+  }, [cvId, cvUrl]);
+
+  const analyzeCV = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `http://localhost:5000/api/cv/analyze/${cvId}`
+      );
+
+      if (!response.ok) {
+        throw new Error("Phân tích CV thất bại");
+      }
+
+      const data = await response.json();
+      setReview(data.review);
+    } catch (error) {
+      console.error("Lỗi khi phân tích CV:", error);
+      message.error(`Lỗi khi phân tích CV: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatReview = (reviewText) => {
+    if (!reviewText) return null;
+
+    // Phân tích chuỗi đánh giá và định dạng thành các phần
+    const sections = reviewText.split(/\d+\./g).filter((text) => text.trim());
+
+    return (
+      <>
+        {sections.map((section, index) => (
+          <div key={index} style={{ marginBottom: "15px" }}>
+            <Paragraph>
+              <strong>{index + 1}.</strong>
+              {section}
+            </Paragraph>
+          </div>
+        ))}
+      </>
+    );
+  };
 
   return (
     <section style={{ padding: "40px", backgroundColor: "#f4f4f4" }}>
@@ -19,8 +76,7 @@ const AnalyzeSection = () => {
         {/* CV Preview */}
         <Col xs={24} md={10}>
           <Card hoverable style={{ textAlign: "center", padding: "10px" }}>
-            <Text type="secondary">Your uploaded CV preview</Text>
-
+            <Text type="secondary">CV của bạn</Text>
             {cvUrl ? (
               <div
                 style={{
@@ -29,16 +85,21 @@ const AnalyzeSection = () => {
                   overflowY: "auto",
                 }}
               >
-                <Document file={cvUrl}>
-                  <Page pageNumber={1} width={400} />
+                <Document
+                  file={cvUrl}
+                  onLoadSuccess={({ numPages }) => setNumPages(numPages)}
+                >
+                  {Array.from(new Array(numPages), (el, index) => (
+                    <Page
+                      key={`page_${index + 1}`}
+                      pageNumber={index + 1}
+                      width={400}
+                    />
+                  ))}
                 </Document>
               </div>
             ) : (
-              <img
-                alt="CV Preview"
-                src="/your-cv-image-url.png"
-                style={{ width: "100%", height: "auto", marginTop: "10px" }}
-              />
+              <div>Không thể hiển thị CV</div>
             )}
           </Card>
         </Col>
@@ -46,35 +107,30 @@ const AnalyzeSection = () => {
         {/* AI Feedback */}
         <Col xs={24} md={14}>
           <Card style={{ padding: "20px" }}>
-            <Title level={3}>AI-Powered CV Analysis</Title>
-            <Text>
-              Here’s the feedback on your resume, broken down by key dimensions:
-            </Text>
-            <ul style={{ marginTop: "15px" }}>
-              <li>
-                <Text strong>Length, Readability & Verbosity:</Text> Some
-                descriptions could be more concise.
-              </li>
-              <li>
-                <Text strong>Relevance:</Text> Your resume is well-suited for
-                tech-related applications.
-              </li>
-              <li>
-                <Text strong>Quantification:</Text> Consider adding specific
-                numbers to highlight achievements.
-              </li>
-              <li>
-                <Text strong>Action Verbs:</Text> Improve the impact of your
-                descriptions with strong action words.
-              </li>
-            </ul>
-            <Button
-              type="primary"
-              icon={<UploadOutlined />}
-              style={{ marginTop: "15px" }}
-            >
-              Upload New CV
-            </Button>
+            <Title level={3}>Phân tích CV bằng AI</Title>
+
+            {loading ? (
+              <div style={{ textAlign: "center", padding: "50px" }}>
+                <Spin size="large" />
+                <div style={{ marginTop: "20px" }}>
+                  Đang phân tích CV của bạn...
+                </div>
+              </div>
+            ) : review ? (
+              <div>
+                <Text>Đánh giá chi tiết về CV của bạn:</Text>
+                <div style={{ marginTop: "15px" }}>{formatReview(review)}</div>
+                <Button
+                  type="primary"
+                  onClick={() => navigate("/upload")}
+                  style={{ marginTop: "15px" }}
+                >
+                  Tải lên CV mới
+                </Button>
+              </div>
+            ) : (
+              <div>Không thể tải kết quả phân tích</div>
+            )}
           </Card>
         </Col>
       </Row>
@@ -82,4 +138,4 @@ const AnalyzeSection = () => {
   );
 };
 
-export default AnalyzeSection;
+export default AnalyzePage;
