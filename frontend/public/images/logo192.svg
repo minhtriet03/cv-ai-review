@@ -1,0 +1,26 @@
+<svg width="192" height="192" viewBox="0 0 192 192" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Nền logo -->
+  <rect width="192" height="192" rx="32" fill="url(#gradient)"/>
+  
+  <!-- Biểu tượng tài liệu CV -->
+  <rect x="51" y="43.5" width="90" height="120" rx="9" fill="white"/>
+  
+  <!-- Các đường gạch trên tài liệu -->
+  <rect x="66" y="66" width="60" height="6" rx="3" fill="#2196F3"/>
+  <rect x="66" y="84" width="60" height="6" rx="3" fill="#2196F3"/>
+  <rect x="66" y="102" width="45" height="6" rx="3" fill="#2196F3"/>
+  <rect x="66" y="120" width="60" height="6" rx="3" fill="#2196F3"/>
+  <rect x="66" y="138" width="30" height="6" rx="3" fill="#2196F3"/>
+  
+  <!-- Biểu tượng AI -->
+  <circle cx="141" cy="51" r="21" fill="#FF5722"/>
+  <text x="141" y="57" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="middle">AI</text>
+  
+  <!-- Gradient cho nền -->
+  <defs>
+    <linearGradient id="gradient" x1="0" y1="0" x2="192" y2="192" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2196F3"/>
+      <stop offset="1" stop-color="#1565C0"/>
+    </linearGradient>
+  </defs>
+</svg> 

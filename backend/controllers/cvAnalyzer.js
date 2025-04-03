@@ -19,6 +19,7 @@ exports.analyzeCV = async (req, res) => {
     const { cvId } = req.params; // Lấy cvId từ params
 
     // Tìm CV trong database
+    
     const cv = await CV.findById(cvId);
     if (!cv) {
       return res.status(404).json({ message: "CV không tồn tại" });

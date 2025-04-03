@@ -20,7 +20,7 @@ import About from "./pages/about";
 import UserInfo from "./components/Login/LoginSection3";
 import Term from "./pages/term-service";
 import ForgotPasswordPage from "./pages/forgot-password";
-import ResetPassword from "./pages/reset-password";
+
 import Analyze from "./pages/analyze";
 import ChatboxAI from "./pages/chatboxAI";
 
@@ -43,7 +43,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/term-privacy" element={<Term />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
+            
           </Routes>
           <Footer />
         </div>
