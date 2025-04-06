@@ -36,7 +36,7 @@ const handleUploadCV = async () => {
   }
 
   const userId = localStorage.getItem("userId");
-  console.log("🔍 userId từ localStorage:", userId);
+  console.log("🔍 Tìm userId từ localStorage:", userId);
 
   if (!userId) {
     message.error("Không tìm thấy userId. Vui lòng đăng nhập lại!");

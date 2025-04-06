@@ -1,152 +1,197 @@
-import React, { useState } from "react";
-import { Input, Button, Layout, Typography, List, Avatar, Spin } from "antd";
-import { SendOutlined, RobotOutlined, UserOutlined } from "@ant-design/icons";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  Input,
+  Button,
+  Typography,
+  Row,
+  Col,
+  Card,
+  Space,
+  message,
+  Avatar,
+} from "antd";
+import { SendOutlined, UserOutlined, RobotOutlined } from "@ant-design/icons";
 import axios from "axios";
 
-const { Header, Content, Footer } = Layout;
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
-const ChatBox = () => {
-  const [messages, setMessages] = useState([]);
+const ChatSection = () => {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const chatRef = useRef(null);
 
-  const sendMessage = async () => {
+  const handleSend = async () => {
     if (!input.trim()) return;
 
-    const newMessages = [...messages, { sender: "user", text: input }];
-    setMessages(newMessages);
+    const userMessage = { sender: "user", text: input };
+    setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setLoading(true);
 
     try {
-      console.log("📤 Gửi request đến backend:", input);
       const response = await axios.post("http://localhost:5000/api/deepseek", {
         prompt: input,
       });
-
-      console.log("📥 Phản hồi từ backend:", response.data);
-      setMessages([
-        ...newMessages,
-        { sender: "bot", text: response.data.reply },
-      ]);
-    } catch (error) {
-      console.error(
-        "❌ Lỗi API:",
-        error.response ? error.response.data : error
-      );
-      setMessages([
-        ...newMessages,
-        {
-          sender: "bot",
-          text: "❌ Không thể lấy phản hồi từ AI. Vui lòng thử lại!",
-        },
-      ]);
+      const botMessage = { sender: "bot", text: response.data.reply };
+      setMessages((prev) => [...prev, botMessage]);
+      console.log("📩 Response from AI:", response.data);
+      message.success("✅ AI đã phản hồi! (xem console)");
+    } catch (err) {
+      console.error(err);
+      message.error("⚠️ Không thể gửi đến AI");
     } finally {
       setLoading(false);
     }
   };
 
+  const suggestions = [
+    "Which scholarships can I apply to for studying Masters in CS at Stanford?",
+    "I'm applying to Mechanical Engineering. Should I take AP stats or IB math SL?",
+    "What should an appeal for in-state tuition at Michigan look like?",
+  ];
 
-  return (
-    <Layout style={{ height: "100vh" }}>
-      {/* Header */}
-      <Header
-        style={{
-          backgroundColor: "#1890ff",
-          color: "white",
-          textAlign: "center",
-          fontSize: "20px",
-        }}
-      >
-        🤖 AI Chat Assistant
-      </Header>
+  useEffect(() => {
+    if (chatRef.current) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    }
+  }, [messages]);
 
-      {/* Chatbox */}
-      <Content
+  const renderMessage = (msg, index) => {
+    const isUser = msg.sender === "user";
+    return (
+      <div
+        key={index}
         style={{
-          padding: "20px",
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
+          justifyContent: isUser ? "flex-end" : "flex-start",
+          marginBottom: 16,
         }}
       >
+        {!isUser && (
+          <Avatar
+            icon={<RobotOutlined />}
+            style={{
+              backgroundColor: "#e6f4ff",
+              marginRight: 8,
+            }}
+          />
+        )}
         <div
           style={{
-            flex: 1,
-            overflowY: "auto",
-            padding: "10px",
-            background: "#f5f5f5",
-            borderRadius: "10px",
+            maxWidth: "75%",
+            backgroundColor: isUser ? "#f0f0f0" : "#ffffff",
+            padding: "12px 16px",
+            borderRadius: 16,
+            boxShadow: "0 1px 4px rgba(0,0,0,0.05)",
+            lineHeight: 1.6,
+            textAlign: "left",
           }}
         >
-          <List
-            dataSource={messages}
-            renderItem={(msg) => (
-              <List.Item
-                style={{
-                  display: "flex",
-                  justifyContent:
-                    msg.sender === "user" ? "flex-end" : "flex-start",
-                }}
-              >
-                <List.Item.Meta
-                  avatar={
-                    <Avatar
-                      icon={
-                        msg.sender === "user" ? (
-                          <UserOutlined />
-                        ) : (
-                          <RobotOutlined />
-                        )
-                      }
-                    />
-                  }
-                  title={msg.sender === "user" ? "Bạn" : "AI"}
-                  description={msg.text}
-                  style={{
-                    background: msg.sender === "user" ? "#1890ff" : "#f5f5f5",
-                    padding: "10px",
-                    borderRadius: "10px",
-                    color: msg.sender === "user" ? "white" : "black",
-                  }}
-                />
-              </List.Item>
-            )}
-          />
-          {loading && (
-            <div style={{ textAlign: "center", marginTop: "10px" }}>
-              <Spin size="small" />
-            </div>
-          )}
+          {msg.text}
         </div>
-      </Content>
+        {isUser && (
+          <Avatar
+            icon={<UserOutlined />}
+            style={{
+              backgroundColor: "#d3adf7",
+              marginLeft: 8,
+            }}
+          />
+        )}
+      </div>
+    );
+  };
 
-      {/* Input Box */}
-      <Footer
+  return (
+    <div
+      style={{
+        padding: "60px 20px",
+        maxWidth: "900px",
+        margin: "0 auto",
+        textAlign: "center",
+      }}
+    >
+      <Text type="secondary">AI counselor</Text>
+      <Title level={2} style={{ margin: "10px 0" }}>
+        Hello{" "}
+        <span role="img" aria-label="wave">
+          👋
+        </span>
+      </Title>
+      <Title level={4}>How can I help you today?</Title>
+      <Text>Ask me anything about your college applications</Text>
+
+      <Row gutter={[16, 16]} justify="center" style={{ marginTop: 40 }}>
+        {suggestions.map((s, i) => (
+          <Col xs={24} sm={12} md={8} key={i}>
+            <Card bordered style={{ borderRadius: 12, background: "#f9f9f9" }}>
+              <Text>{s}</Text>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+
+      {/* Chat Messages */}
+      <div
+        ref={chatRef}
         style={{
-          background: "white",
-          padding: "10px",
+          marginTop: 50,
+          maxHeight: 400,
+          overflowY: "auto",
+          padding: "20px 10px",
+          backgroundColor: "#fafafa",
+          borderRadius: 16,
+          border: "1px solid #eee",
+        }}
+      >
+        {messages.map((msg, index) => renderMessage(msg, index))}
+      </div>
+
+      {/* Chat Input */}
+      <Space
+        style={{
+          marginTop: 40,
           display: "flex",
+          justifyContent: "center",
           alignItems: "center",
+          maxWidth: 600,
+          marginInline: "auto",
         }}
       >
         <Input
-          placeholder="Nhập tin nhắn..."
+          placeholder="Your message"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onPressEnter={sendMessage}
-          style={{ flex: 1, marginRight: "10px", borderRadius: "5px" }}
+          onPressEnter={handleSend}
+          style={{
+            borderRadius: "30px",
+            padding: "10px 20px",
+            height: 50,
+            fontSize: "16px",
+          }}
         />
         <Button
           type="primary"
+          shape="circle"
           icon={<SendOutlined />}
-          onClick={sendMessage}
-          disabled={loading}
+          loading={loading}
+          onClick={handleSend}
+          style={{
+            backgroundColor: "#6A5ACD",
+            border: "none",
+            width: 50,
+            height: 50,
+          }}
         />
-      </Footer>
-    </Layout>
+      </Space>
+
+      <div style={{ marginTop: 16, fontSize: 12, color: "#999" }}>
+        🤝 Help us improve this AI counselor by sharing feedback via email or
+        forum!
+      </div>
+    </div>
   );
 };
 
-export default ChatBox;
+export default ChatSection;

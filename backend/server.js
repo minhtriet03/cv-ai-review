@@ -32,7 +32,7 @@ console.log(
 );
 const userRoutes = require("./routers/userRoutes");
 app.use("/api", userRoutes);
-// app.use("/api/user", userRoutes);
+app.use("/api/user", userRoutes);
 
 const uploadRoutes = require("./routers/uploadRoutes"); 
 app.use("/api/upload", uploadRoutes); 

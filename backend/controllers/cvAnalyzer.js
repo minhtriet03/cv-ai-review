@@ -4,6 +4,7 @@ const CV = require("../models/cvModel");
 const pdf = require("pdf-parse");
 
 // Hàm để tải PDF từ URL
+
 const fetchPdfFromUrl = async (url) => {
   try {
     const response = await axios.get(url, { responseType: "arraybuffer" });
@@ -76,6 +77,9 @@ exports.analyzeCV = async (req, res) => {
     ${cvContent}
     `;
     // Gọi OpenAI API để phân tích CV
+    // log cvContent
+    console.log("CV Content:", cvContent);
+    
     const openAIResponse = await axios.post(
       process.env.OPENAI_API_URL,
       {
@@ -89,7 +93,7 @@ exports.analyzeCV = async (req, res) => {
         },
       }
     );
-
+  
     const review = openAIResponse.data.choices[0].message.content;
 
     // Cập nhật CV với nội dung và đánh giá
