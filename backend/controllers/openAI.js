@@ -19,8 +19,6 @@ const chatDeepSeek = async (req, res) => {
       {
         headers: {
           Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-          "HTTP-Referer": "http://localhost:3000",
-          "X-Title": "cv-ai-review",
           "Content-Type": "application/json",
         },
       }
@@ -30,11 +28,16 @@ const chatDeepSeek = async (req, res) => {
     res.json({ reply: response.data.choices[0].message.content });
   } catch (error) {
     console.error(
-      "❌ Lỗi khi gọi DeepSeek API:",
-      error.response?.data || error
+      "❌ Lỗi khi gọi OpenRouter API:",
+      error.response?.data || error.message
     );
-    res.status(500).json({ error: "Lỗi server khi gọi DeepSeek API!" });
+    res.status(500).json({
+      error: "Lỗi server khi gọi OpenRouter API!",
+      details: error.response?.data || error.message,
+    });
+    
   }
+
 };
 
 module.exports = { chatDeepSeek };

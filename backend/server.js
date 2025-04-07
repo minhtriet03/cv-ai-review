@@ -15,8 +15,8 @@ app.use(cors());
 // Connect to MongoDB
 mongoose
   .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+    // useNewUrlParser: true,
+    // useUnifiedTopology: true,
   })
   .then(() => {
     console.log("✅ MongoDB Connected")
@@ -32,7 +32,7 @@ console.log(
 );
 const userRoutes = require("./routers/userRoutes");
 app.use("/api", userRoutes);
-// app.use("/api/user", userRoutes);
+app.use("/api/user", userRoutes);
 
 const uploadRoutes = require("./routers/uploadRoutes"); 
 app.use("/api/upload", uploadRoutes); 
@@ -41,7 +41,9 @@ app.use("/api/upload", uploadRoutes);
 const chatRoutes = require("./routers/openAI-Routes");
 app.use("/api/deepseek", chatRoutes);
 
-
+// Router AI Review CV
+const cvRoutes = require("./routers/cvRoutes");
+app.use("/api/cv", cvRoutes);
 
 // Simple API to check server
 app.get("/", (req, res) => {

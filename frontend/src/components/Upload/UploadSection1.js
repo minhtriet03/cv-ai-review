@@ -20,42 +20,80 @@ const UploadSection = () => {
     if (file.size > 5 * 1024 * 1024) {
       message.error("File quá lớn! Vui lòng chọn file nhỏ hơn 5MB.");
       return Upload.LIST_IGNORE;
-    }
 
+    }
     const fileURL = URL.createObjectURL(file);
     setFile(file);
     setFileURL(fileURL);
     return false; // Ngăn chặn upload tự động
+    
   };
 
-  const handleUploadCV = async () => {
-    if (!file) {
-      message.error("Vui lòng chọn file trước khi upload!");
-      return;
+const handleUploadCV = async () => {
+  if (!file) {
+    message.error("Vui lòng chọn file trước khi upload!");
+    return;
+  }
+
+  const userId = localStorage.getItem("userId");
+  console.log("🔍 Tìm userId từ localStorage:", userId);
+
+  if (!userId) {
+    message.error("Không tìm thấy userId. Vui lòng đăng nhập lại!");
+    return;
+  }
+
+  console.log("File chuẩn bị upload:", file);
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "cv-ai-review");
+
+  try {
+    // 🟢 Upload lên Cloudinary
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/upload`,
+      { method: "POST", body: formData }
+    );
+
+    const result = await response.json();
+    console.log("Cloudinary API Response:", result);
+
+    if (!response.ok || !result.secure_url) {
+      throw new Error(result.error?.message || "Upload thất bại!");
     }
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "cv-ai-review");
+    // 🟢 Gửi link CV lên backend để lưu vào MongoDB
+    const saveResponse = await fetch("http://localhost:5000/api/upload/cv", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userId,
+        cvUrl: result.secure_url,
+        fileName: file.name,
+      }),
+    });
 
-    try {
-      const response = await fetch(
-        `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/raw/upload`,
-        { method: "POST", body: formData }
-      );
+    const saveResult = await saveResponse.json();
+    console.log("Backend Response:", saveResult);
 
-      const result = await response.json();
-      if (!response.ok || !result.secure_url) {
-        throw new Error("Upload thất bại!");
-      }
-
-      message.success("CV tải lên thành công!");
-      navigate("/analyze", { state: { cvUrl: result.secure_url } });
-    } catch (error) {
-      console.error("Lỗi upload:", error);
-      message.error("Đã xảy ra lỗi khi upload CV.");
+    if (!saveResponse.ok) {
+      throw new Error(saveResult.message || "Lưu CV thất bại!");
     }
-  };
+    
+    message.success("CV tải lên & lưu thành công!");
+    navigate("/analyze", {
+      state: {
+        cvUrl: result.secure_url,
+        cvId: saveResult.cv._id,
+      },
+    });
+  } catch (error) {
+    console.error("Lỗi upload:", error);
+    message.error(`Đã xảy ra lỗi khi upload CV: ${error.message}`);
+  }
+};
+
 
   return (
     <section style={{ padding: "40px", background: "#f5f5f5" }}>

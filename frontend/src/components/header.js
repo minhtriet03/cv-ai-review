@@ -1,5 +1,12 @@
 import React, { useContext, useEffect } from "react";
-import { Navbar, Nav, Form, FormControl, Button, Dropdown } from "react-bootstrap";
+import {
+  Navbar,
+  Nav,
+  Form,
+  FormControl,
+  Button,
+  Dropdown,
+} from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { UserContext } from "../UserContext";
@@ -17,15 +24,11 @@ const Header = () => {
   return (
     <Navbar bg="#f2f4f7" expand="lg" className="shadow-sm px-4">
       <Navbar.Brand as={Link} to="/" className="d-flex align-items-center">
-        <div
-          style={{
-            width: "40px",
-            height: "40px",
-            backgroundColor: "#f2f4f7",
-            borderRadius: "50%",
-            marginRight: "10px",
-          }}
-        ></div>
+        <img
+          src="/images/new-logo.svg"
+          alt="CV AI Review Logo"
+          style={{ width: "48px", height: "48px", marginRight: "12px" }}
+        />
         <span className="fw-bold">AI-Powered CV Analysis</span>
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -86,7 +89,7 @@ const Header = () => {
                   localStorage.removeItem("user");
                   localStorage.removeItem("token");
                   setUser(null);
-                  navigate("/");
+                  navigate("/logout");
                 }}
                 style={{ color: "black" }}
                 onMouseEnter={(e) => (e.target.style.color = "red")}

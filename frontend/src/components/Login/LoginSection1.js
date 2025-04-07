@@ -43,6 +43,7 @@ const LoginSection1 = () => {
   
       if (response.data?.user && response.data?.token) {
         localStorage.setItem("user", JSON.stringify(response.data.user));
+         localStorage.setItem("userId", response.data.user._id);
         localStorage.setItem("token", response.data.token);
         setUser(response.data.user);
         navigate("/login-success");
@@ -54,8 +55,7 @@ const LoginSection1 = () => {
   
       if (error.response) {
         const { status, data } = error.response;
-        
-        // Xử lý theo mã lỗi từ backend
+        console.log("Error response:", data); // Debug
         if (status === 400) {
           setErrors({ api: "Invalid request. Please check your input." });
         } else if (status === 401) {

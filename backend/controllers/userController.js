@@ -1,5 +1,9 @@
 const User = require("../models/userModel");
-const { registerUser, verifyUserEmail, loginUser } = require("../services/userService");
+const {
+  registerUser,
+  verifyUserEmail,
+  loginUser,
+} = require("../services/userService");
 const { sendPasswordResetEmail } = require("../services/emailService");
 const crypto = require("crypto");
 
@@ -41,7 +45,7 @@ exports.verifyEmail = async (req, res) => {
   try {
     const { email, otp } = req.body;
     const response = await verifyUserEmail(email, otp);
-    console.log(email,otp);
+    console.log(email, otp);
     res.status(200).json(response);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -80,9 +84,7 @@ exports.forgotPassword = async (req, res) => {
   }
 };
 
-
 // reset password
-
 exports.resetPassword = async (req, res) => {
   const { token, newPassword } = req.body;
   try {
@@ -92,7 +94,9 @@ exports.resetPassword = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(400).json({ message: "Token không đúng hoặc đã hết hạn" });
+      return res
+        .status(400)
+        .json({ message: "Token không đúng hoặc đã hết hạn" });
     }
 
     user.password = newPassword;
@@ -106,9 +110,35 @@ exports.resetPassword = async (req, res) => {
   }
 };
 
+// Thay đổi mật khẩu cho người dùng đã đăng nhập
+exports.changePassword = async (req, res) => {
+  const { userId, currentPassword, newPassword } = req.body;
+
+  try {
+    // Tìm người dùng theo ID
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Người dùng không tồn tại" });
+    }
+
+    // Kiểm tra mật khẩu hiện tại
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Mật khẩu hiện tại không đúng" });
+    }
+
+    // Cập nhật mật khẩu mới
+    user.password = newPassword;
+    await user.save();
+
+    res.status(200).json({ message: "Mật khẩu đã được thay đổi thành công" });
+  } catch (err) {
+    console.error("Lỗi khi thay đổi mật khẩu:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
 // upload image
-
-
 exports.updateProfilePicture = async (req, res) => {
   try {
     const { userId, imageUrl } = req.body;
@@ -129,13 +159,11 @@ exports.updateProfilePicture = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Profile picture updated!",
-        user: updatedUser,
-      });
+    res.status(200).json({
+      success: true,
+      message: "Profile picture updated!",
+      user: updatedUser,
+    });
     console.log("✅ Updated user:", updatedUser);
   } catch (error) {
     console.error("❌ Error updating profile picture:", error);
