@@ -13,7 +13,7 @@ const chatDeepSeek = async (req, res) => {
     const response = await axios.post(
       process.env.OPENAI_API_URL,
       {
-        model: "deepseek/deepseek-chat-v3-0324:free",
+        model: "openrouter/optimus-alpha",
         messages: [{ role: "user", content: prompt }],
       },
       {

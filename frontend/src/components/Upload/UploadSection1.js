@@ -39,7 +39,7 @@ const handleUploadCV = async () => {
   console.log("🔍 Tìm userId từ localStorage:", userId);
 
   if (!userId) {
-    message.error("Không tìm thấy userId. Vui lòng đăng nhập lại!");
+    message.error("Vui lòng đăng nhập trước khi upload CV!");
     return;
   }
 

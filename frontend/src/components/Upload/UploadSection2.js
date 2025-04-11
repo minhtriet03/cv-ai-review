@@ -1,5 +1,5 @@
 // frontend/src/pages/analyze.js
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect ,useRef} from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Card, Row, Col, Typography, Button, Spin, message } from "antd";
 import { Document, Page, pdfjs } from "react-pdf";
@@ -19,15 +19,20 @@ const AnalyzePage = () => {
   const [review, setReview] = useState(null);
   const [numPages, setNumPages] = useState(null);
 
-  useEffect(() => {
-    if (!cvUrl || !cvId) {
-      message.error("Thông tin CV không hợp lệ");
-      navigate("/upload");
-      return;
-    }
+  const hasAnalyzed = useRef(false);
 
-    analyzeCV();
-  }, [cvId, cvUrl]);
+useEffect(() => {
+  if (hasAnalyzed.current) return;
+  hasAnalyzed.current = true;
+
+  if (!cvUrl || !cvId) {
+    message.error("Thông tin CV không hợp lệ");
+    navigate("/upload");
+    return;
+  }
+
+  analyzeCV();
+}, [cvUrl, cvId, navigate]);
 
   const analyzeCV = async () => {
     try {
@@ -35,7 +40,8 @@ const AnalyzePage = () => {
       const response = await fetch(
         `http://localhost:5000/api/cv/analyze/${cvId}`
       );
-
+        console.log("ID:", cvId);
+        console.log("URL:", cvUrl);
       if (!response.ok) {
         throw new Error("Phân tích CV thất bại");
       }

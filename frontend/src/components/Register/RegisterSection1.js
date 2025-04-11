@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 
 const SignupSection = () => {
-  const [step, setStep] = useState("signup"); // "signup" | "otp"
+  const [step, setStep] = useState("signup");
+  const navigate = useNavigate(); // "signup" | "otp"
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -55,7 +57,7 @@ const SignupSection = () => {
 
         if (response.status === 200) {
             console.log("✅ Tài khoản đăng ký thành công!");
-            setStep("login"); // Chuyển sang bước tiếp theo
+            navigate("/login"); // Chuyển hướng đến trang đăng nhập
             setError("");
         }
     } catch (error) {

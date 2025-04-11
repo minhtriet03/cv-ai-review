@@ -12,10 +12,7 @@ const Home = () => {
     return (
         <div>
             <HeroSection/>
-            <IntroSection />
-            <SignupSection />
-            <TestimonialsSection />
-            <WelcomeSection/>
+           
         </div>
     );
 }

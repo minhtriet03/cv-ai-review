@@ -55,13 +55,25 @@ exports.verifyEmail = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    // Gọi hàm xử lý đăng nhập và lấy user + token
     const { user, token } = await loginUser(email, password);
+
+    // Gửi token vào cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false, // true nếu dùng HTTPS
+      sameSite: "Lax",
+    });
+
+    // Trả response
     res.status(200).json({ user, token });
   } catch (error) {
-    const statusCode = error.status || 500; // Lấy mã lỗi từ createError, mặc định 500
+    const statusCode = error.status || 500;
     res.status(statusCode).json({ message: error.message });
   }
 };
+
 
 exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
@@ -172,3 +184,20 @@ exports.updateProfilePicture = async (req, res) => {
       .json({ message: "Internal server error", error: error.message });
   }
 };
+
+exports.logoutUser = async (req, res) => {
+  try {
+    // Xóa cookie có cùng options như lúc set (để xoá đúng)
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: false, // để false nếu chạy localhost
+      sameSite: "Lax", // phải khớp sameSite khi set
+    });
+
+    return res.status(200).json({ message: "Đăng xuất thành công" });
+  } catch (error) {
+    console.error("❌ Lỗi khi đăng xuất:", error);
+    return res.status(500).json({ message: "Đăng xuất thất bại" });
+  }
+};
+

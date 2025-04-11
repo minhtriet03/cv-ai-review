@@ -37,16 +37,22 @@ const LoginSection1 = () => {
       const response = await axios.post("http://localhost:5000/api/login", {
         email,
         password,
-      });
-  
+      }
+    ,
+    {
+      withCredentials: true, 
+    }
+  );
+      
       console.log("Login response:", response.data); // Debug
   
       if (response.data?.user && response.data?.token) {
+        localStorage.setItem("userId", response.data.user._id);
+        localStorage.setItem("email", response.data.user.email);
         localStorage.setItem("user", JSON.stringify(response.data.user));
-         localStorage.setItem("userId", response.data.user._id);
         localStorage.setItem("token", response.data.token);
         setUser(response.data.user);
-        navigate("/login-success");
+        navigate("/");
       } else {
         setErrors({ api: "Phản hồi từ máy chủ không hợp lệ." });
       }
@@ -55,7 +61,8 @@ const LoginSection1 = () => {
   
       if (error.response) {
         const { status, data } = error.response;
-        console.log("Error response:", data); // Debug
+        
+        // Xử lý theo mã lỗi từ backend
         if (status === 400) {
           setErrors({ api: "Invalid request. Please check your input." });
         } else if (status === 401) {

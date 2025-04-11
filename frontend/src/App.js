@@ -28,7 +28,7 @@ function App() {
   return (
     <UserProvider>
       <Router>
-        <div className="container">
+        <div className="d-flex flex-column min-vh-100">
           <Header />
           <Routes>
             <Route path="/" element={<Home />} />
