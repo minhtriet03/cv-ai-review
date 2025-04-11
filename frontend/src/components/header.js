@@ -8,12 +8,12 @@ import {
   Dropdown,
 } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import { UserContext } from "../UserContext";
 
 const Header = () => {
   const { user, setUser } = useContext(UserContext);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const loggedInUser = JSON.parse(localStorage.getItem("user"));
     if (loggedInUser) {
@@ -48,22 +48,7 @@ const Header = () => {
           className="d-flex ms-3 me-3 position-relative"
           style={{ maxWidth: "300px" }}
         >
-          <FormControl
-            type="search"
-            placeholder="Search..."
-            className="rounded-pill px-4 shadow-sm"
-            style={{
-              border: "1px solid #f2f4f7",
-              height: "40px",
-            }}
-          />
-          <Button
-            variant="light"
-            className="position-absolute end-0 top-50 translate-middle-y me-2 p-1 border-0"
-            style={{ background: "transparent" }}
-          >
-            <FaSearch size={14} />
-          </Button>
+         
         </Form>
 
         {user ? (
@@ -85,18 +70,35 @@ const Header = () => {
                 Profile
               </Dropdown.Item>
               <Dropdown.Item
-                onClick={() => {
-                  localStorage.removeItem("user");
-                  localStorage.removeItem("token");
-                  setUser(null);
-                  navigate("/logout");
-                }}
-                style={{ color: "black" }}
-                onMouseEnter={(e) => (e.target.style.color = "red")}
-                onMouseLeave={(e) => (e.target.style.color = "black")}
-              >
-                Logout
-              </Dropdown.Item>
+                   onClick={() => {
+                     fetch("http://localhost:5000/api/logout", {
+                       method: "POST",
+                       credentials: "include", // Gửi cookie để backend clear
+                     })
+                       .then((res) => res.json())
+                       .then((data) => {
+                       console.log(data.message);
+
+                       // Xoá localStorage nếu bạn dùng
+                       localStorage.clear();
+                       setUser(null);
+
+                       // Chuyển hướng về trang login
+                       navigate("/login");
+                                      })
+                       .catch((err) => {
+                        console.error("❌ Lỗi khi gọi logout:", err);
+                       });
+                     
+                     console.log(document.cookie); // Chỉ để debug (không thấy nếu cookie là HttpOnly)
+                   }}
+                   style={{ color: "black" }}
+                   onMouseEnter={(e) => (e.target.style.color = "red")}
+                   onMouseLeave={(e) => (e.target.style.color = "black")}
+                   >
+                   Logout
+                   </Dropdown.Item>
+
             </Dropdown.Menu>
           </Dropdown>
         ) : (

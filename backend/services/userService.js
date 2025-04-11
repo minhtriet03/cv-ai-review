@@ -143,6 +143,7 @@ exports.loginUser = async (email, password) => {
 };
 
 
+
 exports.listUsers = async () => {
   const users = await User.find();
   console.log("All users in the database:", users);

@@ -36,7 +36,6 @@ const ChatSection = () => {
       const botMessage = { sender: "bot", text: response.data.reply };
       setMessages((prev) => [...prev, botMessage]);
       console.log("📩 Response from AI:", response.data);
-      message.success("✅ AI đã phản hồi! (xem console)");
     } catch (err) {
       console.error(err);
       message.error("⚠️ Không thể gửi đến AI");
