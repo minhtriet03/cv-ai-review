@@ -3,9 +3,9 @@ import { Layout } from "antd";
 import { Routes, Route } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import AdminHeader from "./Header";
-import Dashboard from "../../pages/admin/Dashboard";
-import UserManagement from "../../pages/admin/UserManagement";
-import CVManagement from "../../pages/admin/CVManagement";
+import Dashboard from "../../pages/AdminPages/Dashboard";
+import UserManagement from "../../pages/AdminPages/UserManagement";
+import CVManagement from "../../pages/AdminPages/CVManagement";
 
 
 const { Sider, Content } = Layout;
