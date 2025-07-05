@@ -21,7 +21,7 @@ const ChatSection = () => {
   const [messages, setMessages] = useState([]);
   const chatRef = useRef(null);
 
-  const handleSend = async () => {
+  const handleSend = async (res) => {
     if (!input.trim()) return;
 
     const userMessage = { sender: "user", text: input };
@@ -32,13 +32,17 @@ const ChatSection = () => {
     try {
       const response = await axios.post("http://localhost:5000/api/deepseek", {
         prompt: input,
-      });
+      },{withCredentials: true});
       const botMessage = { sender: "bot", text: response.data.reply };
       setMessages((prev) => [...prev, botMessage]);
       console.log("📩 Response from AI:", response.data);
     } catch (err) {
       console.error(err);
-      message.error("⚠️ Không thể gửi đến AI");
+      if (err.response && err.response.status === 401) {
+        message.error("⚠️ Bạn chưa đăng nhập!");
+      } else {
+        message.error("⚠️ Không thể gửi đến AI hãy kiểm tra đăng nhập");
+      }
     } finally {
       setLoading(false);
     }

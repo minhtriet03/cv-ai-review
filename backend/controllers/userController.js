@@ -6,6 +6,8 @@ const {
 } = require("../services/userService");
 const { sendPasswordResetEmail } = require("../services/emailService");
 const crypto = require("crypto");
+const createError = require("http-errors");
+const bcrypt = require('bcryptjs');
 
 exports.getUsers = async (req, res) => {
   try {
@@ -64,16 +66,16 @@ exports.login = async (req, res) => {
       httpOnly: true,
       secure: false, // true nếu dùng HTTPS
       sameSite: "Lax",
+      maxAge: 24 * 60 * 60 * 1000 // 1 ngày
     });
-
-    // Trả response
-    res.status(200).json({ user, token });
+    
+    // Trả response (không cần trả token nữa)
+    res.status(200).json({ user });
   } catch (error) {
     const statusCode = error.status || 500;
     res.status(statusCode).json({ message: error.message });
   }
 };
-
 
 exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
@@ -129,23 +131,30 @@ exports.changePassword = async (req, res) => {
   try {
     // Tìm người dùng theo ID
     const user = await User.findById(userId);
+    console.log("tên người dùng: ", user.name);
     if (!user) {
       return res.status(404).json({ message: "Người dùng không tồn tại" });
     }
 
-    // Kiểm tra mật khẩu hiện tại
-    const isMatch = await user.comparePassword(currentPassword);
-    if (!isMatch) {
+    const hashed = await bcrypt.hash(currentPassword, 10);
+    console.log('currentPassword:', currentPassword);
+    console.log('Hash thử:', hashed);
+    console.log('Hash trong DB:', user.password);
+    const isPasswordMatch = await bcrypt.compare(currentPassword, user.password);
+    console.log(isPasswordMatch);
+    if (!isPasswordMatch) {
+      console.log("Hashed password in DB:", user.password);
+      console.log("password:", currentPassword);
+      console.log("Password does not match");
       return res.status(400).json({ message: "Mật khẩu hiện tại không đúng" });
     }
 
     // Cập nhật mật khẩu mới
     user.password = newPassword;
     await user.save();
-
     res.status(200).json({ message: "Mật khẩu đã được thay đổi thành công" });
   } catch (err) {
-    console.error("Lỗi khi thay đổi mật khẩu:", err);
+    console.log("Lỗi khi thay đổi mật khẩu:", err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -201,3 +210,103 @@ exports.logoutUser = async (req, res) => {
   }
 };
 
+// Controller admin
+
+// Lấy danh sách tất cả người dùng
+exports.getUsers = async (req, res, next) => {
+    try {
+        const users = await User.find();
+        console.log("User: ",users);
+        res.status(200).json(users);
+    } catch (error) {
+        next(createError(500, "Lỗi khi lấy danh sách người dùng"));
+    }
+};
+
+// Lấy thông tin chi tiết của một người dùng
+exports.getUserById = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return next(createError(404, "Người dùng không tồn tại"));
+        }
+        res.status(200).json(user);
+    } catch (error) {
+        next(createError(500, "Lỗi khi lấy thông tin người dùng"));
+    }
+};
+
+// Tạo người dùng mới
+exports.createUser = async (req, res, next) => {
+    try {
+        const newUser = new User(req.body);
+        await newUser.save();
+        res.status(201).json(newUser);
+    } catch (error) {
+        next(createError(500, "Lỗi khi tạo người dùng"));
+    }
+};
+
+// Cập nhật thông tin người dùng
+exports.updateUser = async (req, res, next) => {
+    try {
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updatedUser) {
+            return next(createError(404, "Người dùng không tồn tại"));
+        }
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        next(createError(500, "Lỗi khi cập nhật người dùng"));
+    }
+};
+
+exports.updateName = async (req, res, next) => {
+    try {
+      console.log(req.body._id);
+        const updatedUser = await User.findByIdAndUpdate(req.body._id, req.body, { new: true });
+        console.log(updatedUser);
+        if (!updatedUser) {
+            return next(createError(404, "Người dùng không tồn tại"));
+        }
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        next(createError(500, "Lỗi khi cập nhật tên người dùng"));
+        console.log(error);
+    }
+}
+exports.blockUser = async (req, res, next) => {
+    try {
+        const updated = await User.findByIdAndUpdate(req.params.id, { isBlocked: true }, { new: true }); 
+        if (!updated) {
+            return next(createError(404, "Người dùng không tồn tại"));
+        }
+        res.status(200).json({ message: "Khóa người dùng thành công" });
+    } catch (error) {
+        console.log(error);
+        next(createError(500, "Lỗi khi khóa người dùng"));  
+    }
+}
+// Mở khóa người dùng
+exports.unblockUser = async (req, res, next) => {
+    try {
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, { isBlocked: false }, { new: true });
+        if (!updatedUser) {
+            return next(createError(404, "Người dùng không tồn tại"));
+        }
+        res.status(200).json({ message: "Mở khóa người dùng thành công" });
+    } catch (error) {
+        next(createError(500, "Lỗi khi mở khóa người dùng"));
+    }
+};
+// Xóa người dùng
+exports.deleteUser = async (req, res, next) => {
+    try {
+        const deletedUser = await User.findByIdAndDelete(req.params.id);
+        if (!deletedUser) {
+            return next(createError(404, "Người dùng không tồn tại"));
+        }
+        res.status(200).json({ message: "Xóa người dùng thành công" });
+    } catch (error) {
+        next(createError(500, "Lỗi khi xóa người dùng"));
+    }
+};

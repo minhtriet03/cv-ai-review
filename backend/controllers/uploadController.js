@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const saveCV  = require("../services/cvService");
+const { saveCV } = require("../services/cvService");
 
 exports.uploadFile = async (req, res) => {
   try {

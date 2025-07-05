@@ -1,0 +1,127 @@
+/* WriteCV.css */
+.write-cv-container {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.cv-form-card {
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cv-preview-card {
+  position: sticky;
+  top: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cv-preview-container {
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  padding: 20px;
+  background-color: white;
+  min-height: 800px;
+  overflow: hidden;
+}
+
+.theme-selector {
+  margin-bottom: 20px;
+}
+
+.section-divider {
+  margin: 24px 0;
+  border-top: 1px solid #f0f0f0;
+}
+
+.form-section {
+  margin-bottom: 24px;
+}
+
+.dynamic-form-item {
+  margin-bottom: 16px;
+  padding: 16px;
+  border: 1px solid #f0f0f0;
+  border-radius: 6px;
+  background-color: #fafafa;
+}
+
+.add-button {
+  margin-top: 16px;
+}
+
+.remove-button {
+  margin-top: 8px;
+}
+
+.export-button {
+  margin-top: 24px;
+  height: 48px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+  .cv-preview-card {
+    position: static;
+    margin-top: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .write-cv-container {
+    padding: 16px;
+  }
+  
+  .cv-preview-container {
+    padding: 16px;
+    min-height: 600px;
+  }
+}
+
+/* Custom scrollbar for preview */
+.cv-preview-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.cv-preview-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.cv-preview-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.cv-preview-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Animation for form items */
+.dynamic-form-item {
+  transition: all 0.3s ease;
+}
+
+.dynamic-form-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Loading state for export button */
+.export-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Success message styling */
+.success-message {
+  color: #52c41a;
+  font-weight: 500;
+}
+
+/* Error message styling */
+.error-message {
+  color: #ff4d4f;
+  font-weight: 500;
+} 

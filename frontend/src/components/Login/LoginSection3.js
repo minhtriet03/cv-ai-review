@@ -18,6 +18,8 @@ import {
 } from "antd";
 import { format } from "date-fns";
 import { UserOutlined, UploadOutlined, EditOutlined } from "@ant-design/icons";
+import axios from "axios";
+const createError = require("http-errors");
 
 const { Title, Text } = Typography;
 
@@ -27,6 +29,8 @@ const UserInfo = () => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showEditName, setShowEditName] = useState(false);
+  const [editName, setEditName] = useState(user?.name || "");
 
   useEffect(() => {
     const loggedInUser = JSON.parse(localStorage.getItem("user"));
@@ -56,15 +60,11 @@ const UserInfo = () => {
 
     try {
       // Upload file to Cloudinary
-      const response = await fetch(
+      const response = await axios.post(
         "https://api.cloudinary.com/v1_1/dyz8bbxv5/image/upload",
-        {
-          method: "POST",
-          body: formData,
-        }
+        formData
       );
-
-      const data = await response.json();
+      const data = response.data;
       console.log("Cloudinary Response:", data);
 
       if (!data.secure_url) {
@@ -72,19 +72,15 @@ const UserInfo = () => {
       }
 
       // Send the uploaded image URL to the backend to update the user's profile picture
-      const backendResponse = await fetch(
+      const backendResponse = await axios.post(
         "http://localhost:5000/api/user/update-profile-picture",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId: user._id, imageUrl: data.secure_url }),
-        }
+        { userId: user._id, imageUrl: data.secure_url },
+        { withCredentials: true }
       );
-
-      const result = await backendResponse.json();
+      const result = backendResponse.data;
       console.log("Backend Response:", result);
 
-      if (!backendResponse.ok) {
+      if (!backendResponse.status || backendResponse.status !== 200) {
         throw new Error("Failed to update profile picture on the server.");
       }
 
@@ -98,6 +94,10 @@ const UserInfo = () => {
       console.error("Lỗi upload avatar:", error);
       message.error("Lỗi khi upload ảnh.");
     }
+  };
+
+  const handleEditName = (res, req ) => {
+    
   };
   // logic xử lý đổi mật khẩu
   const handleUpdatePassword = async () => {
@@ -113,21 +113,17 @@ const UserInfo = () => {
 
     try {
       const user = JSON.parse(localStorage.getItem("user"));
-      const response = await fetch(
+      const response = await axios.post(
         "http://localhost:5000/api/change-password",
         {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            userId: user._id,
-            currentPassword,
-            newPassword,
-          }),
-        }
+          userId: user._id,
+          currentPassword,
+          newPassword,
+        },
+        { withCredentials: true }
       );
-
-      const result = await response.json();
-      if (!response.ok) {
+      const result = response.data;
+      if (!response.status || response.status !== 200) {
         throw new Error(result.message);
       }
 
@@ -178,11 +174,48 @@ const UserInfo = () => {
             >
               <Button icon={<UploadOutlined />}>Upload Profile Picture</Button>
             </Upload>
-            <Text strong mr={12}>
-              {user?.name}
-
-              <EditOutlined />
-            </Text>
+            {showEditName ? (
+              <div>
+                <Input
+                  value={editName}
+                  onChange={e => setEditName(e.target.value)}
+                  style={{ width: 180 }}
+                  size="small"
+                />
+                <Button type="primary" size="small" onClick={async () => {
+                  // Cập nhật tên user vào localStorage và context
+                  const updatedUser = { ...user, name: editName };
+                  localStorage.setItem("user", JSON.stringify(updatedUser));
+                  console.log(user._id);
+                  try {
+                    const response = await axios.post(
+                      "http://localhost:5000/api/user/update-name",
+                      { _id: user._id, name: editName },
+                      { withCredentials: true }
+                    );
+                    const result = response.data;
+                    console.log(result);
+                    setUser(updatedUser);
+                    setShowEditName(false);
+                    message.success("Đã cập nhật tên!");
+                  } catch (error) {
+                    message.error("Lỗi khi cập nhật tên!");
+                  }
+                }}>Lưu</Button>
+                <Button size="small" onClick={() => {
+                  setEditName(user?.name || "");
+                  setShowEditName(false);
+                }}>Hủy</Button>
+              </div>
+            ) : (
+              <Text strong mr={12}>
+                {user?.name}
+                <Button icon={<EditOutlined />} style={{ marginLeft: 10 }} onClick={() => {
+                  setEditName(user?.name || "");
+                  setShowEditName(true);
+                }} />
+              </Text>
+            )}
             <Text>
               <strong>Email:</strong> {user?.email}
             </Text>

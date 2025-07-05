@@ -13,7 +13,7 @@ const chatDeepSeek = async (req, res) => {
     const response = await axios.post(
       process.env.OPENAI_API_URL,
       {
-        model: "openrouter/optimus-alpha",
+        model: "deepseek/deepseek-r1-0528-qwen3-8b:free",
         messages: [{ role: "user", content: prompt }],
       },
       {
@@ -35,7 +35,10 @@ const chatDeepSeek = async (req, res) => {
       error: "Lỗi server khi gọi OpenRouter API!",
       details: error.response?.data || error.message,
     });
-    
+    res.status(401).json({
+      error: "lỗi xác thực token",
+      details: error.response?.data || error.message,
+    })
   }
 
 };

@@ -10,6 +10,7 @@ import {
 import { FaSearch } from "react-icons/fa";
 import { Link,useNavigate } from "react-router-dom";
 import { UserContext } from "../UserContext";
+import { message } from "antd";
 
 const Header = () => {
   const { user, setUser } = useContext(UserContext);
@@ -43,6 +44,12 @@ const Header = () => {
           <Nav.Link as={Link} to="/ai-counselor" className="fw-bold">
             AI Counselor
           </Nav.Link>
+          <Nav.Link as={Link} to="/evaluated-cvs" className="fw-bold">
+            Your CV
+          </Nav.Link>
+          <Nav.Link as={Link} to="/create-cv" className="fw-bold">
+            Create your CV
+          </Nav.Link>
         </Nav>
         <Form
           className="d-flex ms-3 me-3 position-relative"
@@ -73,7 +80,7 @@ const Header = () => {
                    onClick={() => {
                      fetch("http://localhost:5000/api/logout", {
                        method: "POST",
-                       credentials: "include", // Gửi cookie để backend clear
+                       credentials: "include", 
                      })
                        .then((res) => res.json())
                        .then((data) => {
@@ -85,12 +92,13 @@ const Header = () => {
 
                        // Chuyển hướng về trang login
                        navigate("/login");
-                                      })
-                       .catch((err) => {
+                       message.success("Đăng xuất thành công!");
+                      })
+                      .catch((err) => {
                         console.error("❌ Lỗi khi gọi logout:", err);
-                       });
-                     
-                     console.log(document.cookie); // Chỉ để debug (không thấy nếu cookie là HttpOnly)
+                        message.error("Đăng xuất thất bại!");
+                      });
+                      console.log(document.cookie); // Chỉ để debug (không thấy nếu cookie là HttpOnly)
                    }}
                    style={{ color: "black" }}
                    onMouseEnter={(e) => (e.target.style.color = "red")}

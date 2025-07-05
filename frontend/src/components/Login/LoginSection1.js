@@ -3,6 +3,7 @@ import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { UserContext } from "../../UserContext";
+import { message } from "antd";
 
 const LoginSection1 = () => {
   const [email, setEmail] = useState("");
@@ -32,29 +33,41 @@ const LoginSection1 = () => {
       setErrors(validationErrors);
       return;
     }
-  
+    console.log("password:",password);
     try {
       const response = await axios.post("http://localhost:5000/api/login", {
-        email,
-        password,
-      }
-    ,
+        email: email,
+        password: password,
+      },
+
     {
       withCredentials: true, 
     }
   );
+
       
       console.log("Login response:", response.data); // Debug
   
-      if (response.data?.user && response.data?.token) {
+      if (response.data?.user) {
+        if (response.data.user.isBlocked) {
+          setErrors({ api: "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên để biết thêm chi tiết." });
+          return;
+        }
+      }
+      if (response.data?.user ) {
         localStorage.setItem("userId", response.data.user._id);
         localStorage.setItem("email", response.data.user.email);
         localStorage.setItem("user", JSON.stringify(response.data.user));
-        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("loginSuccess", "1");
+        if(response.data.user.role === "user"){
+          navigate("/");
+          message.success("Bạn đã đăng nhập thành công!");
+        }
         setUser(response.data.user);
-        navigate("/");
+        
       } else {
         setErrors({ api: "Phản hồi từ máy chủ không hợp lệ." });
+        console.log(error);
       }
     } catch (error) {
       console.error("Login failed:", error);
@@ -126,7 +139,7 @@ const LoginSection1 = () => {
                   Log In
                 </Button>
                 <div className="text-center mt-3">
-                  <Link to="/forgot-password" className="text-muted">
+                  <Link to="/forgot-password" style={{ textDecoration: 'none' }} className="text-muted">
                     Forgot Password?
                   </Link>
                 </div>
@@ -134,7 +147,7 @@ const LoginSection1 = () => {
                   <span className="text-muted">OR</span>
                 </div>
                 <div className="text-center mt-2">
-                  <Link to="/register" className="text-muted">
+                  <Link to="/register" style={{ textDecoration: 'none' }} className="text-muted">
                     Create Account
                   </Link>
                 </div>

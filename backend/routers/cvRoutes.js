@@ -2,7 +2,7 @@
 const express = require("express");
 const { analyzeCV } = require("../controllers/cvAnalyzer");
 const router = express.Router();
-
-router.get("/analyze/:cvId", analyzeCV);
+const { auth } = require("../middleware/auth"); 
+router.get("/analyze/:cvId",auth, analyzeCV);
 
 module.exports = router;

@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      # Bạn nên quản lý các biến môi trường một cách an toàn,
+      # ví dụ sử dụng file .env và tham chiếu ở đây
+      # MONGO_URI: ${MONGO_URI}
+      # JWT_SECRET: ${JWT_SECRET}
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    container_name: cv-ai-review-backend
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80" # Ánh xạ cổng 3000 của máy host tới cổng 80 của container Nginx
+    depends_on:
+      - backend
+    container_name: cv-ai-review-frontend
+
+volumes:
+  node_modules: 
