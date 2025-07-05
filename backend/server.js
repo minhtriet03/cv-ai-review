@@ -3,16 +3,38 @@ const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config({ path: [".env.local", ".env"] });
 const cors = require("cors");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
+const mongoSanitize = require("express-mongo-sanitize");
+const xss = require("xss-clean");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Security Middleware
+app.use(helmet()); // Security headers
+app.use(mongoSanitize()); // Prevent NoSQL injection
+app.use(xss()); // Prevent XSS attacks
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
+app.use(limiter);
+
 // Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10kb' })); // Body limit is 10kb
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+app.use(cookieParser()); // Parse cookies
+
+// CORS configuration
 app.use(cors({
-  origin: "http://localhost:3000", // chính xác địa chỉ frontend
-  credentials: true,               // cho phép gửi cookie
+  origin: "http://localhost:3000", // Frontend URL
+  credentials: true, // Allow credentials (cookies)
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Connect to MongoDB
@@ -45,8 +67,15 @@ const chatRoutes = require("./routers/openAI-Routes");
 app.use("/api/deepseek", chatRoutes);
 
 // Router AI Review CV
+const cvRouter = require("./routers/cvRouter");
+app.use("/api/cv", cvRouter);
+app.use("/evaluated-cvs", cvRouter);
+
 const cvRoutes = require("./routers/cvRoutes");
 app.use("/api/cv", cvRoutes);
+
+const dashboardRoutes = require("./routers/dashboardRoutes");
+app.use("/api/dashboard", dashboardRoutes);
 
 // Simple API to check server
 app.get("/", (req, res) => {

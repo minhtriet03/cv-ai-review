@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema(
     isVerified: { type: Boolean, default: false }, // Trạng thái xác thực
     resetPasswordToken: { type: String },
     resetPasswordExpires: { type: Date },
+    isBlocked: {type: Boolean},
   },
   { timestamps: true }
 );

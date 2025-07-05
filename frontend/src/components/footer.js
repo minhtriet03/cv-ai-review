@@ -13,7 +13,7 @@ const Footer = () => {
             Terms & Privacy Policy
           </Nav.Link>
           <Nav.Link href="#" className="text-muted ms-3">
-            Created by MinhTriet & PhuGia
+            Created by MinhTriet
           </Nav.Link>
         </Nav>
       </Container>

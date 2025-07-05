@@ -18,6 +18,7 @@ const transporter = nodemailer.createTransport({
 
 exports.registerUser = async (userData) => {
   try {
+
     console.log("🔍 registerUser called with:", userData);
 
     const { name, email, password } = userData;
@@ -31,23 +32,20 @@ exports.registerUser = async (userData) => {
       throw new Error("User already exists");
     }
 
-    console.log("🔍 Hashing password...");
-    const hashedPassword = await bcrypt.hash(password, 10);
-    console.log("✅ Password hashed successfully");
-
     const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
     const verificationExpires = new Date(Date.now() + 10 * 60 * 1000);
 
     const newUser = new User({
       name,
       email,
-      password: hashedPassword,
+      password: password,
       role: "user",
       profilePicture: null,
       verificationCode,
       verificationExpires,
       isVerified: false,
     });
+
 
     await newUser.save();
 
@@ -60,45 +58,37 @@ exports.registerUser = async (userData) => {
     });
     
     return { message: "Đăng ký thành công! Vui lòng kiểm tra email để xác nhận tài khoản." };
+  
   } catch (error) {
     console.error("❌ Error in registerUser:", error);
     throw error;  // Ném lỗi để controller xử lý
   }
+
 };
 exports.verifyUserEmail = async (email, otp) => {
   console.log("🔍 Kiểm tra email:", email);
   console.log("🔍 Kiểm tra OTP nhận được:", otp);
-
   const user = await User.findOne({ email });
-
   if (!user) {
     console.error("❌ User không tồn tại");
     throw new Error("User not found");
   }
-
   if (user.isVerified) {
     console.warn("⚠️ User đã xác thực trước đó");
     throw new Error("User already verified");
   }
-
   console.log("📌 OTP trong database:", user.verificationCode);
-
   if (user.verificationCode.toString() !== otp.toString()) {
     console.error("❌ Mã OTP không chính xác");
     throw new Error("Invalid verification code");
   }
-
   // Cập nhật trạng thái xác thực
   user.isVerified = true;
   user.verificationCode = ""; // Xóa mã OTP sau khi xác minh
   await user.save();
-
   console.log("✅ Xác thực thành công!");
-
   return { message: "Email verified successfully!" };
 };
-
-
 // đăng nhập người dùng
 exports.loginUser = async (email, password) => {
   try {
@@ -120,10 +110,11 @@ exports.loginUser = async (email, password) => {
       await User.deleteOne({ email: user.email });
       throw createError(403, "Tài khoản chưa xác minh mã otp vui lòng đăng kí lại");
     }
-
     // Kiểm tra mật khẩu (nên dùng bcrypt để so sánh)
-    const isPasswordMatch = bcrypt.compareSync(password, user.password);
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
+      console.log("Hashed password in DB:", user.password);
+      console.log("password:",password);
       console.log("Password does not match");
       throw createError(401, "Mật khẩu không chính xác");
     }
@@ -141,8 +132,6 @@ exports.loginUser = async (email, password) => {
     throw error;
   }
 };
-
-
 
 exports.listUsers = async () => {
   const users = await User.find();

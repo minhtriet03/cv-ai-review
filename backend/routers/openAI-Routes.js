@@ -1,7 +1,7 @@
 const express = require("express");
 const { chatDeepSeek } = require("../controllers/openAI");
 const router = express.Router();
-
-router.post("/", chatDeepSeek);
+const { auth } = require("../middleware/auth");
+router.post("/",auth, chatDeepSeek);
 
 module.exports = router;

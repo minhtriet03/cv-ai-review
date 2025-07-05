@@ -3,6 +3,8 @@ import React, { useState, useEffect ,useRef} from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Card, Row, Col, Typography, Button, Spin, message } from "antd";
 import { Document, Page, pdfjs } from "react-pdf";
+import axios from "axios";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -37,19 +39,20 @@ useEffect(() => {
   const analyzeCV = async () => {
     try {
       setLoading(true);
-      const response = await fetch(
-        `http://localhost:5000/api/cv/analyze/${cvId}`
+      const response = await axios.get(
+        `http://localhost:5000/api/cv/analyze/${cvId}`,{withCredentials: true }
       );
         console.log("ID:", cvId);
         console.log("URL:", cvUrl);
-      if (!response.ok) {
+      if (!response) {
         throw new Error("Phân tích CV thất bại");
       }
-
-      const data = await response.json();
-      setReview(data.review);
+      setReview(response.data.review);
     } catch (error) {
-      console.error("Lỗi khi phân tích CV:", error);
+      console.error("Chi tiết lỗi:");
+      console.error("Tên:", error.name);
+      console.error("Thông điệp:", error.message);
+      console.error("Stack:", error.stack);
       message.error(`Lỗi khi phân tích CV: ${error.message}`);
     } finally {
       setLoading(false);
@@ -62,17 +65,85 @@ useEffect(() => {
     // Phân tích chuỗi đánh giá và định dạng thành các phần
     const sections = reviewText.split(/\d+\./g).filter((text) => text.trim());
 
+    // Regex để tìm điểm số dạng x/y (ví dụ: 8/10, 7.5/10)
+    const scoreRegex = /(\d+(?:\.\d+)?\s*\/\s*10)/;
+
     return (
-      <>
-        {sections.map((section, index) => (
-          <div key={index} style={{ marginBottom: "15px" }}>
-            <Paragraph>
-              <strong>{index + 1}.</strong>
-              {section}
-            </Paragraph>
-          </div>
-        ))}
-      </>
+      <ul className="list-group list-group-flush">
+        {sections.map((section, index) => {
+          // Tìm điểm số trong section
+          const match = section.match(scoreRegex);
+          let score = null;
+          let content = section;
+          if (match) {
+            score = match[1];
+            // Loại bỏ điểm số khỏi nội dung
+            content = section.replace(scoreRegex, '').replace(':', '').trim();
+          }
+          return (
+            <li
+              key={index}
+              className="list-group-item d-flex flex-column  justify-content-between align-items-center shadow-sm"
+              style={{
+                borderRadius: '12px',
+                marginBottom: '16px',
+                background: '#fff',
+                border: '1px solid #e3e3e3',
+                transition: 'box-shadow 0.2s',
+                cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+              }}
+              onMouseOver={e => (e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.10)')}
+              onMouseOut={e => (e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)')}
+            >
+              <div>
+                <div
+                  style={{
+                    fontWeight: 600,
+                    fontSize: 18,
+                    color: '#2d3a4b',
+                    marginBottom: 6,
+                    wordBreak: 'break-word',
+                    maxHeight: '450px',
+                    overflowY: 'auto',
+                    width: '100%',
+                    paddingRight: 4,
+                  }}
+                >
+                  <span>{index + 1}.</span>
+                  {/* Tách content theo dấu gạch ngang và xuống dòng */}
+                  {content.split(/\s*-\s*/).map((part, idx) => (
+                    idx === 0 ? (
+                      <span key={idx} style={{ marginLeft: 8, fontSize: 16, fontWeight: 400 }}>{part}</span>
+                    ) : (
+                      <div key={idx} style={{ marginLeft: 24, fontSize: 15, fontWeight: 400, color: '#444', display: 'flex', alignItems: 'flex-start' }}>
+                        <span style={{ marginRight: 6, color: '#bbb' }}>-</span>
+                        <span>{part}</span>
+                      </div>
+                    )
+                  ))}
+                </div>
+              </div>
+              {score && (
+                <span
+                  className="badge bg-success fs-5 d-flex align-items-center"
+                  style={{
+                    minWidth: '70px',
+                    height: '38px',
+                    borderRadius: '20px',
+                    fontWeight: 600,
+                    fontSize: 18,
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+                  }}
+                >
+                  <i className="bi bi-star-fill" style={{ marginRight: 6, color: '#fff700' }}></i>
+                  {score}
+                </span>
+              )}
+            </li>
+          );
+        })}
+      </ul>
     );
   };
 
@@ -125,7 +196,9 @@ useEffect(() => {
             ) : review ? (
               <div>
                 <Text>Đánh giá chi tiết về CV của bạn:</Text>
-                <div style={{ marginTop: "15px" }}>{formatReview(review)}</div>
+                <div style={{ marginTop: "15px" }}>
+                  {formatReview(review)}
+                </div>
                 <Button
                   type="primary"
                   onClick={() => navigate("/upload")}
