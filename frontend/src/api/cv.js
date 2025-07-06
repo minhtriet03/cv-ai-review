@@ -1,10 +1,13 @@
+import api from "./index";
+
 export const uploadFile = async (file) => {
   const formData = new FormData();
   formData.append("file", file);
 
-  const response = await fetch("http://localhost:3000/api/upload", {
-    method: "POST",
-    body: formData,
+  const response = await api.post("/upload", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
   });
 
   const data = await response.json();

@@ -42,8 +42,6 @@ useEffect(() => {
       const response = await api.get(
         `/cv/analyze/${cvId}`,{withCredentials: true }
       );
-        console.log("ID:", cvId);
-        console.log("URL:", cvUrl);
       if (!response) {
         throw new Error("Phân tích CV thất bại");
       }
@@ -53,7 +51,11 @@ useEffect(() => {
       console.error("Tên:", error.name);
       console.error("Thông điệp:", error.message);
       console.error("Stack:", error.stack);
-      message.error(`Lỗi khi phân tích CV: ${error.message}`);
+      if (error.response && error.response.status === 401) {
+        message.error("Bạn cần đăng nhập để sử dụng chức năng này!");
+      } else {
+        message.error(`Lỗi khi phân tích CV: ${error.message}`);
+      }
     } finally {
       setLoading(false);
     }

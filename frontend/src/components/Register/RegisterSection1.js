@@ -25,7 +25,7 @@ const SignupSection = () => {
       );
   
       if (response.status === 200) {
-        console.log("OTP sent to:", email); 
+        // console.log("OTP sent to:", email);
         setStep("otp");
         setError("");
       }
@@ -39,10 +39,10 @@ const SignupSection = () => {
   };
   
   const handleVerifyOtp = async () => {
-    console.log("📩 Đang gửi OTP:", { email, otp }); // ✅ Log trước khi gửi
+    // console.log("📩 Đang gửi OTP:", { email, otp }); // ✅ Log trước khi gửi
 
     if (!otp) {
-        console.warn("⚠️ Vui lòng nhập OTP!");
+        // console.warn("⚠️ Vui lòng nhập OTP!");
         return setError("Vui lòng nhập OTP!");
     }
 
@@ -53,15 +53,15 @@ const SignupSection = () => {
             { headers: { "Content-Type": "application/json" } }
         );
 
-        console.log("📥 Phản hồi từ server:", response.data); // ✅ Log phản hồi server
+        // console.log("📥 Phản hồi từ server:", response.data); // ✅ Log phản hồi server
 
         if (response.status === 200) {
-            console.log("✅ Tài khoản đăng ký thành công!");
+            // console.log("✅ Tài khoản đăng ký thành công!");
             navigate("/login"); // Chuyển hướng đến trang đăng nhập
             setError("");
         }
     } catch (error) {
-        console.error("❌ Lỗi khi xác thực OTP:", error.response?.data?.message || error.message);
+        // console.error("❌ Lỗi khi xác thực OTP:", error.response?.data?.message || error.message);
 
         if (error.response?.status === 400) {
             setError("Sai OTP!");
