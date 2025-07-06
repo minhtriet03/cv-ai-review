@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../api";
 import { UserContext } from "../../UserContext";
 import { message } from "antd";
 
@@ -35,7 +35,7 @@ const LoginSection1 = () => {
     }
     console.log("password:",password);
     try {
-      const response = await axios.post("http://localhost:5000/api/login", {
+      const response = await api.post("/login", {
         email: email,
         password: password,
       },

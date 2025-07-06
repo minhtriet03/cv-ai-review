@@ -11,7 +11,7 @@ import {
   Avatar,
 } from "antd";
 import { SendOutlined, UserOutlined, RobotOutlined } from "@ant-design/icons";
-import axios from "axios";
+import api from "../../api";
 
 const { Title, Text } = Typography;
 
@@ -30,7 +30,7 @@ const ChatSection = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:5000/api/deepseek", {
+      const response = await api.post("/deepseek", {
         prompt: input,
       },{withCredentials: true});
       const botMessage = { sender: "bot", text: response.data.reply };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Table, Spinner, Alert, Modal, Button } from 'react-bootstrap';
-import axios from 'axios';
+import api from '../api';
 import { useNavigate } from 'react-router-dom';
 import { set } from 'date-fns';
 
@@ -15,12 +15,7 @@ const EvaluatedCVs = () => {
   useEffect(() => {
     const fetchEvaluatedCVs = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/cv/evaluated-cvs', {
-          withCredentials: true, // Để gửi cookie chứa thông tin đăng nhập
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
+        const response = await api.get('/cv/evaluated-cvs', { withCredentials: true });
         setEvaluatedCVs(response.data);
         setLoading(false);
       } catch (error) {

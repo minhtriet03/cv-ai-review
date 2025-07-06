@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Card, Row, Col, Statistic, Spin } from "antd";
-import axios from "axios";
+import api from "../../api";
 import { Bar } from "@ant-design/charts";
 
 const Dashboard = () => {
@@ -10,7 +10,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchStats = async () => {
       setLoading(true);
-      const res = await axios.get("http://localhost:5000/api/dashboard/stats", { withCredentials: true });
+      const res = await api.get("/dashboard/stats", { withCredentials: true });
       setStats(res.data);
       setLoading(false);
     };
