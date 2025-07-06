@@ -1,6 +1,6 @@
 import { Space, Table, Button, Select, message } from "antd";
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../api";
 import { toast } from "react-toastify";
 
 const CVManagement = () => {
@@ -18,12 +18,11 @@ const CVManagement = () => {
 
   const fetchCVsbyIdUser = async (id) => {
     try {
-     
       if (id == null) {
-        const response = await axios.get("http://localhost:5000/api/cv/cvs", { withCredentials: true });
+        const response = await api.get("/cv/cvs", { withCredentials: true });
         setCVs(response.data);
       } else {
-        const response = await axios.get(`http://localhost:5000/api/cv/cvs/${id}`, { withCredentials: true });
+        const response = await api.get(`/cv/cvs/${id}`, { withCredentials: true });
         setCVs(response.data);
       }
     } catch (error) {
@@ -33,7 +32,7 @@ const CVManagement = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/users" ,{ withCredentials: true });
+      const response = await api.get("/users", { withCredentials: true });
       setUsers(response.data);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -42,8 +41,8 @@ const CVManagement = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(
-        `http://localhost:5000/api/cv/cvs/delete/${id}`,
+      await api.delete(
+        `/cv/cvs/delete/${id}`,
         {
           data: { isVerified: true },
           withCredentials: true

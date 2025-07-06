@@ -18,7 +18,7 @@ import {
 } from "antd";
 import { format } from "date-fns";
 import { UserOutlined, UploadOutlined, EditOutlined } from "@ant-design/icons";
-import axios from "axios";
+import api from "../../api";
 const createError = require("http-errors");
 
 const { Title, Text } = Typography;
@@ -60,8 +60,8 @@ const UserInfo = () => {
 
     try {
       // Upload file to Cloudinary
-      const response = await axios.post(
-        "https://api.cloudinary.com/v1_1/dyz8bbxv5/image/upload",
+      const response = await api.post(
+        "/image/upload",
         formData
       );
       const data = response.data;
@@ -72,8 +72,8 @@ const UserInfo = () => {
       }
 
       // Send the uploaded image URL to the backend to update the user's profile picture
-      const backendResponse = await axios.post(
-        "http://localhost:5000/api/user/update-profile-picture",
+      const backendResponse = await api.post(
+        "/user/update-profile-picture",
         { userId: user._id, imageUrl: data.secure_url },
         { withCredentials: true }
       );
@@ -113,8 +113,8 @@ const UserInfo = () => {
 
     try {
       const user = JSON.parse(localStorage.getItem("user"));
-      const response = await axios.post(
-        "http://localhost:5000/api/change-password",
+      const response = await api.post(
+        "/change-password",
         {
           userId: user._id,
           currentPassword,
@@ -188,8 +188,8 @@ const UserInfo = () => {
                   localStorage.setItem("user", JSON.stringify(updatedUser));
                   console.log(user._id);
                   try {
-                    const response = await axios.post(
-                      "http://localhost:5000/api/user/update-name",
+                    const response = await api.post(
+                      "/user/update-name",
                       { _id: user._id, name: editName },
                       { withCredentials: true }
                     );

@@ -3,7 +3,7 @@ import React, { useState, useEffect ,useRef} from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Card, Row, Col, Typography, Button, Spin, message } from "antd";
 import { Document, Page, pdfjs } from "react-pdf";
-import axios from "axios";
+import api from "../../api";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const { Title, Text, Paragraph } = Typography;
@@ -39,8 +39,8 @@ useEffect(() => {
   const analyzeCV = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(
-        `http://localhost:5000/api/cv/analyze/${cvId}`,{withCredentials: true }
+      const response = await api.get(
+        `/cv/analyze/${cvId}`,{withCredentials: true }
       );
         console.log("ID:", cvId);
         console.log("URL:", cvUrl);

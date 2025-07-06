@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../api";
 
 
 const SignupSection = () => {
@@ -20,7 +20,7 @@ const SignupSection = () => {
   
     try {
       const user = { name, email, password }; // Gửi toàn bộ user object
-      const response = await axios.post("http://localhost:5000/api/register", user,
+      const response = await api.post("/register", user,
         { headers: { "Content-Type": "application/json" } }
       );
   
@@ -47,8 +47,8 @@ const SignupSection = () => {
     }
 
     try {
-        const response = await axios.post(
-            "http://localhost:5000/api/verify-email",
+        const response = await api.post(
+            "/verify-email",
             { email, otp},
             { headers: { "Content-Type": "application/json" } }
         );

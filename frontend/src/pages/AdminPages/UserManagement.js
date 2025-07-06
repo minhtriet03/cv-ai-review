@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Space, Table, Tag, Button, Avatar, message } from "antd";
-import axios from "axios";
+import { Space, Table, Tag, Button, Avatar, message, Select } from "antd";
+import api from "../../api";
 import { toast } from "react-toastify";
 import { UserContext } from "../../UserContext";
 
@@ -14,7 +14,7 @@ const UserManagement = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/users", {withCredentials:true});
+      const response = await api.get("/users", {withCredentials:true});
       setUsers(response.data); // API trả về danh sách user từ MongoDB
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -24,7 +24,7 @@ const UserManagement = () => {
 
   const handleBlock = async (id) => {
     try {
-      const response = await axios.put(`http://localhost:5000/api/users/${id}/block`, { isBlocked: true },{withCredentials:true});
+      const response = await api.put(`/users/${id}/block`, { isBlocked: true },{withCredentials:true});
       message.success("Khóa người dùng thành công!");
       fetchUsers(); // Load lại danh sách user  
     } catch (error) {
@@ -34,7 +34,7 @@ const UserManagement = () => {
   };
   const handleUnblock = async (id) => {
     try {
-      const response = await axios.put(`http://localhost:5000/api/users/${id}/unblock`, { isBlocked: false },{withCredentials:true});
+      const response = await api.put(`/users/${id}/unblock`, { isBlocked: false },{withCredentials:true});
       message.success("Mở khóa người dùng thành công!");
       fetchUsers(); // Load lại danh sách user
     } catch (error) {
@@ -44,8 +44,7 @@ const UserManagement = () => {
   };
   const handleDelete = async (id) => {
     try {
-
-      await axios.delete(`http://localhost:5000/api/users/${id}`,{withCredentials:true});
+      await api.delete(`/users/${id}`,{withCredentials:true});
       message.success("Xóa người dùng thành công!");
       fetchUsers(); // Load lại danh sách user
     } catch (error) {
@@ -55,7 +54,7 @@ const UserManagement = () => {
   };
   const handleSetRole = async (id, newRole) => {
     try {
-      await axios.put(`http://localhost:5000/api/users/${id}`, { role: newRole }, { withCredentials: true });
+      await api.put(`/users/${id}`, { role: newRole }, { withCredentials: true });
       message.success(`Đã cập nhật quyền thành ${newRole}!`);
       fetchUsers();
     } catch (error) {
