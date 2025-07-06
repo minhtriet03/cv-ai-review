@@ -9,6 +9,8 @@ import {
 } from "@ant-design/icons";
 import { message } from "antd";
 import { UserContext } from "../../UserContext";
+import api from "../../api";
+
 const items = [
   {
     key: "1",
@@ -34,10 +36,7 @@ const Sidebar = () => {
   const handleLogout = async () => {
     // Gọi API backend để xoá cookie
     try {
-      await fetch("http://localhost:5000/api/logout", {
-        method: "POST",
-        credentials: "include"
-      });
+      await api.post("/logout");
     } catch (e) {
       // Có thể log lỗi nếu cần
     }

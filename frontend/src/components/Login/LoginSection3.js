@@ -65,7 +65,7 @@ const UserInfo = () => {
         formData
       );
       const data = response.data;
-      console.log("Cloudinary Response:", data);
+      // console.log("Cloudinary Response:", data);
 
       if (!data.secure_url) {
         throw new Error("Upload thất bại!");
@@ -78,7 +78,7 @@ const UserInfo = () => {
         { withCredentials: true }
       );
       const result = backendResponse.data;
-      console.log("Backend Response:", result);
+      // console.log("Backend Response:", result);
 
       if (!backendResponse.status || backendResponse.status !== 200) {
         throw new Error("Failed to update profile picture on the server.");
@@ -186,7 +186,7 @@ const UserInfo = () => {
                   // Cập nhật tên user vào localStorage và context
                   const updatedUser = { ...user, name: editName };
                   localStorage.setItem("user", JSON.stringify(updatedUser));
-                  console.log(user._id);
+                  // console.log(user._id);
                   try {
                     const response = await api.post(
                       "/user/update-name",
@@ -194,7 +194,7 @@ const UserInfo = () => {
                       { withCredentials: true }
                     );
                     const result = response.data;
-                    console.log(result);
+                    // console.log(result);
                     setUser(updatedUser);
                     setShowEditName(false);
                     message.success("Đã cập nhật tên!");

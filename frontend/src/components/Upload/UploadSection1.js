@@ -3,6 +3,7 @@ import { Upload, Card, Typography, message, Button } from "antd";
 import { InboxOutlined, UploadOutlined } from "@ant-design/icons";
 import { Document, Page, pdfjs } from "react-pdf";
 import { useNavigate } from "react-router-dom";
+import api from "../../api";
 
 const { Title, Paragraph } = Typography;
 const { Dragger } = Upload;
@@ -36,14 +37,14 @@ const handleUploadCV = async () => {
   }
 
   const userId = localStorage.getItem("userId");
-  console.log("🔍 Tìm userId từ localStorage:", userId);
+  // console.log("🔍 Tìm userId từ localStorage:", userId);
 
   if (!userId) {
     message.error("Vui lòng đăng nhập trước khi upload CV!");
     return;
   }
 
-  console.log("File chuẩn bị upload:", file);
+  // console.log("File chuẩn bị upload:", file);
 
   const formData = new FormData();
   formData.append("file", file);
@@ -51,31 +52,28 @@ const handleUploadCV = async () => {
 
   try {
     // 🟢 Upload lên Cloudinary
-    const response = await fetch(
-      `https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/upload`,
-      { method: "POST", body: formData }
-    );
+    const response = await api.post("/upload/cv", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
 
     const result = await response.json();
-    console.log("Cloudinary API Response:", result);
+    // console.log("Cloudinary API Response:", result);
 
     if (!response.ok || !result.secure_url) {
       throw new Error(result.error?.message || "Upload thất bại!");
     }
 
     // 🟢 Gửi link CV lên backend để lưu vào MongoDB
-    const saveResponse = await fetch("http://localhost:5000/api/upload/cv", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        userId,
-        cvUrl: result.secure_url,
-        fileName: file.name,
-      }),
+    const saveResponse = await api.post("/upload/cv", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
 
     const saveResult = await saveResponse.json();
-    console.log("Backend Response:", saveResult);
+    // console.log("Backend Response:", saveResult);
 
     if (!saveResponse.ok) {
       throw new Error(saveResult.message || "Lưu CV thất bại!");

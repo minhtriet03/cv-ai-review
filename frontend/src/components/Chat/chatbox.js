@@ -35,7 +35,6 @@ const ChatSection = () => {
       },{withCredentials: true});
       const botMessage = { sender: "bot", text: response.data.reply };
       setMessages((prev) => [...prev, botMessage]);
-      console.log("📩 Response from AI:", response.data);
     } catch (err) {
       console.error(err);
       if (err.response && err.response.status === 401) {

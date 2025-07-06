@@ -11,6 +11,7 @@ import { FaSearch } from "react-icons/fa";
 import { Link,useNavigate } from "react-router-dom";
 import { UserContext } from "../UserContext";
 import { message } from "antd";
+import api from "../api";
 
 const Header = () => {
   const { user, setUser } = useContext(UserContext);
@@ -78,27 +79,16 @@ const Header = () => {
               </Dropdown.Item>
               <Dropdown.Item
                    onClick={() => {
-                     fetch("http://localhost:5000/api/logout", {
-                       method: "POST",
-                       credentials: "include", 
-                     })
-                       .then((res) => res.json())
-                       .then((data) => {
-                       console.log(data.message);
-
-                       // Xoá localStorage nếu bạn dùng
+                     api.post("/logout").then(response => {
+                       // console.log(response.data.message);
                        localStorage.clear();
                        setUser(null);
-
-                       // Chuyển hướng về trang login
                        navigate("/login");
                        message.success("Đăng xuất thành công!");
-                      })
-                      .catch((err) => {
-                        console.error("❌ Lỗi khi gọi logout:", err);
-                        message.error("Đăng xuất thất bại!");
-                      });
-                      console.log(document.cookie); // Chỉ để debug (không thấy nếu cookie là HttpOnly)
+                     }).catch(error => {
+                       console.error("❌ Lỗi khi gọi logout:", error);
+                       message.error("Đăng xuất thất bại!");
+                     });
                    }}
                    style={{ color: "black" }}
                    onMouseEnter={(e) => (e.target.style.color = "red")}

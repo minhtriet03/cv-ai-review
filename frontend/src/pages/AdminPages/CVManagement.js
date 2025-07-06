@@ -50,7 +50,6 @@ const CVManagement = () => {
       );
       message.success("Xác thực CV thành công!");
       fetchCVsbyIdUser(idUser);
-      console.log("id của user là: ", idUser);
     } catch (error) {
       console.error("Error verifying CV:", error);
       message.error("Không thể xác thực CV!");

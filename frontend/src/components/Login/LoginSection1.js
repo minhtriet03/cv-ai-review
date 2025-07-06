@@ -33,7 +33,6 @@ const LoginSection1 = () => {
       setErrors(validationErrors);
       return;
     }
-    console.log("password:",password);
     try {
       const response = await api.post("/login", {
         email: email,
@@ -46,8 +45,6 @@ const LoginSection1 = () => {
   );
 
       
-      console.log("Login response:", response.data); // Debug
-  
       if (response.data?.user) {
         if (response.data.user.isBlocked) {
           setErrors({ api: "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên để biết thêm chi tiết." });
@@ -67,7 +64,6 @@ const LoginSection1 = () => {
         
       } else {
         setErrors({ api: "Phản hồi từ máy chủ không hợp lệ." });
-        console.log(error);
       }
     } catch (error) {
       console.error("Login failed:", error);
