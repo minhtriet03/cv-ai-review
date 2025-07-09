@@ -1,16 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Card, Row, Col, Statistic, Spin } from "antd";
 import api from "../../api";
 import { Bar } from "@ant-design/charts";
+import { UserContext } from "../../UserContext";
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { user, isAdmin } = useContext(UserContext);
+
+  if (!user || !isAdmin) {
+    return (
+      <div style={{ textAlign: 'center', marginTop: 80 }}>
+        <h2>Bạn không có quyền truy cập trang này</h2>
+      </div>
+    );
+  }
 
   useEffect(() => {
     const fetchStats = async () => {
       setLoading(true);
-      const res = await api.get("/dashboard/stats", { withCredentials: true });
+      const res = await api.get("/dashboard/stats");
       setStats(res.data);
       setLoading(false);
     };

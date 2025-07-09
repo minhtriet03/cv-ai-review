@@ -1,12 +1,22 @@
 import { Space, Table, Button, Select, message } from "antd";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import api from "../../api";
 import { toast } from "react-toastify";
+import { UserContext } from "../../UserContext";
 
 const CVManagement = () => {
   const [CVs, setCVs] = useState([]);
   const [idUser, setIdUser] = useState(null);
   const [users, setUsers] = useState([]);
+  const { user, isAdmin } = useContext(UserContext);
+
+  if (!user || !isAdmin) {
+    return (
+      <div style={{ textAlign: 'center', marginTop: 80 }}>
+        <h2>Bạn không có quyền truy cập trang này</h2>
+      </div>
+    );
+  }
 
   useEffect(() => {
     fetchCVsbyIdUser(idUser);
