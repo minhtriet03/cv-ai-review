@@ -28,10 +28,11 @@ app.use(limiter);
 app.use(express.json({ limit: '10kb' })); // Body limit is 10kb
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(cookieParser()); // Parse cookies
+app.set('trust proxy', 1);
 
 // CORS configuration
 app.use(cors({
-  origin: "*", // Frontend URL
+  origin:'http://review.sao789a.site', // Frontend URL
   credentials: true, // Allow credentials (cookies)
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -44,16 +45,16 @@ mongoose
     // useUnifiedTopology: true,
   })
   .then(() => {
-    console.log("✅ MongoDB Connected")
-    console.log(`✅ Connected to database: ${mongoose.connection.db.databaseName}`);
+    console.log("âœ… MongoDB Connected")
+    console.log(`âœ… Connected to database: ${mongoose.connection.db.databaseName}`);
   })
-  .catch((err) => console.error("❌ MongoDB Connection Error:", err));
+  .catch((err) => console.error("âŒ MongoDB Connection Error:", err));
 
 // Routes
-console.log("🔍 OpenAI API URL:", process.env.OPENAI_API_URL);
+console.log("ðŸ” OpenAI API URL:", process.env.OPENAI_API_URL);
 console.log(
-  "🔍 OpenAI API Key:",
-  process.env.OPENAI_API_KEY ? "✅ Loaded" : "❌ Not found"
+  "ðŸ” OpenAI API Key:",
+  process.env.OPENAI_API_KEY ? "âœ… Loaded" : "âŒ Not found"
 );
 const userRoutes = require("./routers/userRoutes");
 app.use("/api", userRoutes);
@@ -79,10 +80,10 @@ app.use("/api/dashboard", dashboardRoutes);
 
 // Simple API to check server
 app.get("/", (req, res) => {
-  res.send("🎉 Backend is running!");
+  res.send("ðŸŽ‰ Backend is running!");
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server is running on port ${PORT}`);
+  console.log(`ðŸš€ Server is running on port ${PORT}`);
 });
 
